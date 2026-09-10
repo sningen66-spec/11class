@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Инженерный лист архитектора ИНС</title>
+<style>
+  :root{
+    --ink:#1a1f2b;
+    --line:#2c3444;
+    --accent:#1d4ed8;
+    --accent-soft:#eef2ff;
+    --paper:#ffffff;
+    --bg:#e9edf3;
+    --muted:#5a6270;
+    --danger:#b91c1c;
+    --ok:#0f766e;
+    --radius:6px;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    font-family:'Inter','Roboto',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    margin:0;
+    padding:24px;
+    line-height:1.4;
+  }
+
+  .sheet{
+    max-width:900px;
+    margin:0 auto;
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 32px;
+  }
+
+  /* ===== Шапка ===== */
+  header.title-block{
+    border-bottom:3px double var(--line);
+    padding-bottom:14px;
+    margin-bottom:18px;
+  }
+  .kicker{
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  h1{
+    font-size:22px;
+    margin:0 0 14px 0;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  .meta-grid{
+    display:grid;
+    grid-template-columns: 2fr 1fr 1fr 1.4fr;
+    gap:10px 14px;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+  .field label{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.6px;
+    color:var(--muted);
+    font-weight:600;
+  }
+  .field input[type="text"],
+  .field input[type="date"]{
+    border:none;
+    border-bottom:1.5px solid var(--line);
+    background:transparent;
+    padding:4px 2px;
+    font-size:13px;
+    font-family:inherit;
+    color:var(--ink);
+  }
+  .field input:focus{outline:none;border-bottom-color:var(--accent);}
+
+  /* ===== Секции ===== */
+  section.block{
+    margin-bottom:16px;
+    border:1.2px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    page-break-inside:avoid;
+    break-inside:avoid;
+  }
+  .block-header{
+    background:var(--ink);
+    color:#fff;
+    padding:7px 14px;
+    font-size:12.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .block-header .goal{
+    font-size:10px;
+    font-weight:500;
+    opacity:0.85;
+    text-transform:none;
+    letter-spacing:0;
+  }
+  .block-body{
+    padding:12px 16px 14px 16px;
+  }
+
+  /* ===== Вопросы блок 1 ===== */
+  .q{
+    margin-bottom:9px;
+    font-size:12.5px;
+  }
+  .q b{color:var(--accent);}
+  .q .num{
+    display:inline-block;
+    width:18px;
+    font-weight:700;
+    color:var(--muted);
+  }
+  .blank{
+    display:inline-block;
+    min-width:90px;
+    border:none;
+    border-bottom:1.4px solid var(--line);
+    background:transparent;
+    font-family:inherit;
+    font-size:12.5px;
+    padding:1px 3px;
+    text-align:center;
+  }
+  .blank:focus{outline:none;border-bottom-color:var(--accent);}
+  .options{
+    font-size:11.5px;
+    color:var(--muted);
+    margin-left:22px;
+  }
+
+  /* ===== Задачи блок 2 ===== */
+  .task-card{
+    border:1px solid #c9cfda;
+    border-radius:var(--radius);
+    padding:10px 12px;
+    margin-bottom:10px;
+    background:#fbfcfe;
+  }
+  .task-card:last-child{margin-bottom:0;}
+  .task-title{
+    font-weight:700;
+    font-size:12.5px;
+    margin-bottom:2px;
+  }
+  .task-desc{
+    font-size:11.8px;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .calc-row{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+    align-items:flex-end;
+  }
+  .calc-field{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+  .calc-field label{
+    font-size:11px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .calc-field .hint{
+    font-size:9.5px;
+    color:var(--muted);
+    font-weight:400;
+  }
+  .calc-field input[type="number"]{
+    width:110px;
+    border:1.3px solid var(--line);
+    border-radius:4px;
+    padding:5px 7px;
+    font-size:13px;
+    font-family:inherit;
+  }
+  .calc-field input[type="number"]:focus{outline:none;border-color:var(--accent);}
+  .just-label{
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:3px;
+    display:block;
+  }
+  textarea.answer{
+    width:100%;
+    border:1.3px solid var(--line);
+    border-radius:4px;
+    font-family:inherit;
+    font-size:12px;
+    padding:6px 8px;
+    resize:vertical;
+  }
+  textarea.answer:focus{outline:none;border-color:var(--accent);}
+
+  /* ===== Схема сети ===== */
+  .net-wrap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:14px 6px 4px 6px;
+    flex-wrap:wrap;
+  }
+  .layer{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+  }
+  .layer-caption{
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--muted);
+    letter-spacing:0.4px;
+    margin-bottom:2px;
+  }
+  .neuron{
+    width:34px;height:34px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    background:var(--accent-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .neuron.in{background:#fef3c7;border-color:#b45309;color:#b45309;}
+  .neuron.out{background:#dcfce7;border-color:var(--ok);color:var(--ok);}
+  .arrowset{
+    font-size:20px;
+    color:#9aa3b2;
+    align-self:center;
+    margin:0 2px;
+  }
+  .net-caption-row{
+    display:flex;
+    justify-content:center;
+    gap:60px;
+    font-size:10px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  /* ===== Сравнение конфигураций ===== */
+  .compare-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .compare-card{
+    border:1px solid #c9cfda;
+    border-radius:var(--radius);
+    padding:8px 10px;
+    background:#fbfcfe;
+  }
+  .compare-card .cfg{
+    font-weight:700;
+    font-size:12px;
+    color:var(--accent);
+    margin-bottom:6px;
+    text-align:center;
+  }
+  .compare-card textarea{
+    width:100%;
+    min-height:48px;
+  }
+
+  /* ===== Аудит ===== */
+  .audit-card{
+    border:1px solid #c9cfda;
+    border-radius:var(--radius);
+    padding:9px 12px;
+    margin-bottom:9px;
+    background:#fff8f6;
+  }
+  .audit-card:last-child{margin-bottom:0;}
+  .audit-scenario{
+    font-size:11.8px;
+    font-style:italic;
+    color:var(--ink);
+    margin-bottom:7px;
+    padding-left:8px;
+    border-left:3px solid var(--danger);
+  }
+  .audit-answers{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .audit-answers label{
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--muted);
+    display:block;
+    margin-bottom:3px;
+  }
+  .audit-answers textarea{
+    width:100%;
+    min-height:36px;
+  }
+
+  /* ===== Подвал ===== */
+  footer{
+    margin-top:6px;
+    display:grid;
+    grid-template-columns:1.4fr 1fr;
+    gap:14px;
+  }
+  .checklist{
+    border:1.2px solid var(--line);
+    border-radius:var(--radius);
+    padding:10px 14px;
+  }
+  .checklist h3, .grade-box h3{
+    font-size:11.5px;
+    text-transform:uppercase;
+    margin:0 0 8px 0;
+    letter-spacing:0.4px;
+  }
+  .check-item{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:11.5px;
+    margin-bottom:6px;
+  }
+  .check-item input{width:14px;height:14px;}
+  .grade-box{
+    border:1.2px solid var(--line);
+    border-radius:var(--radius);
+    padding:10px 14px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .grade-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-end;
+    margin-bottom:8px;
+  }
+  .grade-row .field{flex:1;}
+  .signature-line{
+    border-bottom:1.4px solid var(--line);
+    height:20px;
+  }
+
+  /* ===== ПЕЧАТЬ ===== */
+  @media print{
+    @page{
+      size:A4;
+      margin:9mm 11mm;
+    }
+    html,body{
+      background:#fff;
+      padding:0;
+      margin:0;
+      font-size:11px;
+    }
+    .sheet{
+      max-width:none;
+      border:none;
+      padding:0;
+    }
+    section.block{
+      border:1px solid #000;
+    }
+    .block-header{
+      background:#e5e5e5 !important;
+      color:#000 !important;
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    input, textarea{
+      border-color:#000 !important;
+    }
+    .field input[type="text"],
+    .field input[type="date"],
+    .blank{
+      border:none;
+      border-bottom:1px solid #000;
+    }
+    .calc-field input[type="number"]{
+      border:none;
+      border-bottom:1.2px solid #000;
+      border-radius:0;
+      background:transparent;
+      width:80px;
+    }
+    textarea.answer, .compare-card textarea, .audit-answers textarea{
+      border:none;
+      border-bottom:1px solid #000;
+      border-radius:0;
+      resize:none;
+      background-image:repeating-linear-gradient(transparent, transparent 15px, #000 16px, transparent 17px);
+      height:32px !important;
+      min-height:0;
+    }
+    .task-card, .compare-card, .audit-card{
+      background:#fff !important;
+      border:1px solid #666;
+    }
+    .neuron.in{background:#f5f5f5 !important;}
+    .neuron.out{background:#fafafa !important;}
+    .neuron{background:#fff !important;}
+    .no-print{display:none !important;}
+  }
+
+  .print-btn{
+    display:block;
+    margin:0 auto 14px auto;
+    max-width:900px;
+    text-align:right;
+  }
+  .print-btn button{
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:4px;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .print-btn button:hover{background:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="print-btn no-print">
+  <button onclick="window.print()">🖨️ Печать / Сохранить в PDF</button>
+</div>
+
+<div class="sheet">
+
+  <header class="title-block">
+    <div class="kicker">Информатика · 11 класс · Искусственные нейронные сети</div>
+    <h1>Инженерный лист архитектора ИНС</h1>
+    <div class="meta-grid">
+      <div class="field">
+        <label>Фамилия, Имя</label>
+        <input type="text" placeholder="">
+      </div>
+      <div class="field">
+        <label>Класс</label>
+        <input type="text" value="11">
+      </div>
+      <div class="field">
+        <label>Дата</label>
+        <input type="date">
+      </div>
+      
+    </div>
+  </header>
+
+  <!-- БЛОК 1 -->
+  <section class="block">
+    <div class="block-header">
+      <span>Блок 1. Экспресс-проверка (TensorFlow Playground)</span>
+      <span class="goal">демонстрация учителя</span>
+    </div>
+    <div class="block-body">
+      <div class="q">
+        <span class="num">1.</span>Слой, в который поступают исходные признаки объекта (пиксели, показания датчиков), называется входным и обозначается <input class="blank" type="text">.
+      </div>
+      <div class="q">
+        <span class="num">2.</span>Слой(-и), расположенные между входом и выходом и выполняющие нелинейное преобразование признаков, называются скрытыми и обозначаются <input class="blank" type="text">.
+        <div class="options">Варианты: L<sub>in</sub> · H<sub>n</sub> · L<sub>out</sub></div>
+      </div>
+      <div class="q">
+        <span class="num">3.</span>Слой, формирующий итоговый результат работы сети (класс, вероятность, число), обозначается <input class="blank" type="text">.
+      </div>
+    </div>
+  </section>
+
+  <!-- БЛОК 2 -->
+  <section class="block">
+    <div class="block-header">
+      <span>Блок 2. Практикум: расчёт размерности и топологии</span>
+      <span class="goal">N<sub>in</sub> / N<sub>out</sub></span>
+    </div>
+    <div class="block-body">
+
+      <div class="task-card">
+        <div class="task-title">Задача 2.1 · СКУД (контроль доступа)</div>
+        <div class="task-desc">Сканер отпечатка пальца даёт изображение 32×32 пикселя (градации серого). Система принимает решение из 2 исходов: «доступ разрешён» / «доступ запрещён».</div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>N<sub>in</sub> = <span class="hint">кол-во входных нейронов</span></label>
+            <input type="number" placeholder="?">
+          </div>
+          <div class="calc-field">
+            <label>N<sub>out</sub></label>
+            <input type="number" placeholder="?">
+          </div>
+        </div>
+        <span class="just-label">Обоснование расчёта:</span>
+        <textarea class="answer" rows="2"></textarea>
+      </div>
+
+      <div class="task-card">
+        <div class="task-title">Задача 2.2 · Сортировка мусора</div>
+        <div class="task-desc">Камера передаёт цветное RGB-изображение 10×10 пикселей. Сеть должна отнести объект к одной из 4 категорий отходов.</div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>N<sub>in</sub></label>
+            <input type="number" placeholder="?">
+          </div>
+          <div class="calc-field">
+            <label>N<sub>out</sub></label>
+            <input type="number" placeholder="?">
+          </div>
+        </div>
+        <span class="just-label">Обоснование расчёта:</span>
+        <textarea class="answer" rows="2"></textarea>
+      </div>
+
+      <div class="task-card">
+        <div class="task-title">Задача 2.3 · Медицинская диагностика</div>
+        <div class="task-desc">На вход подаются 14 клинических параметров пациента. Сеть определяет один из 3 диагностических исходов.</div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>N<sub>in</sub></label>
+            <input type="number" placeholder="?">
+          </div>
+          <div class="calc-field">
+            <label>N<sub>out</sub></label>
+            <input type="number" placeholder="?">
+          </div>
+        </div>
+        <span class="just-label">Обоснование расчёта:</span>
+        <textarea class="answer" rows="2"></textarea>
+      </div>
+
+    </div>
+  </section>
+
+   <!-- БЛОК 3 -->
+  <section class="block">
+    <div class="block-header">
+      <span>Блок 3. Технический аудит (поиск ошибок)</span>
+      <span class="goal">анализ кейсов</span>
+    </div>
+    <div class="block-body">
+
+      <div class="audit-card">
+        <div class="audit-scenario">Сценарий А: Инженер спроектировал сеть для СКУД (задача 2.1) с архитектурой 1 → 8 → 1, подав на вход только среднюю яркость изображения одним числом.</div>
+        <div class="audit-answers">
+          <div>
+            <label>В чём ошибка?</label>
+            <textarea></textarea>
+          </div>
+          <div>
+            <label>Как исправить?</label>
+            <textarea></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-card">
+        <div class="audit-scenario">Сценарий Б: Для задачи сортировки мусора (задача 2.2, 4 категории) инженер задал выходной слой из 1 нейрона, который должен выдавать числа 1, 2, 3 или 4.</div>
+        <div class="audit-answers">
+          <div>
+            <label>В чём ошибка?</label>
+            <textarea></textarea>
+          </div>
+          <div>
+            <label>Как исправить?</label>
+            <textarea></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ПОДВАЛ -->
+  <footer>
+    <div class="checklist">
+      <h3>Чек-лист самопроверки</h3>
+      <div class="check-item"><input type="checkbox" id="c1"><label for="c1">Я верно рассчитал N<sub>in</sub> и N<sub>out</sub> во всех задачах Блока 2</label></div>
+      <div class="check-item"><input type="checkbox" id="c2"><label for="c2">Я могу объяснить назначение скрытого слоя своими словами</label></div>
+      <div class="check-item"><input type="checkbox" id="c3"><label for="c3">Я нашёл и объяснил ошибки в Блоке 4</label></div>
+    </div>
+    <div class="grade-box">
+      <h3>Оценка учителя</h3>
+      <div class="grade-row">
+        <div class="field">
+          <label>Баллы</label>
+          <input type="text" placeholder="___ / 20">
+        </div>
+        <div class="field">
+          <label>Отметка</label>
+          <input type="text" placeholder="___">
+        </div>
+      </div>
+      <div class="field">
+        <label>Подпись</label>
+        <div class="signature-line"></div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
