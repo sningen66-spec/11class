@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Урок 1 — Виды машинного обучения</title>
+<style>
+  :root {
+    --bg: #f4f2ec;
+    --panel: #ffffff;
+    --ink: #14161c;
+    --muted: #55596a;
+    --line: #cfc9b8;
+    --accent: #1d2f52;
+    --accent-light: #e7ecf5;
+    --supervised: #0b5f7a;
+    --supervised-bg: #d7ecf3;
+    --unsupervised: #1c7a44;
+    --unsupervised-bg: #dcf0e2;
+    --reinforcement: #a14e05;
+    --reinforcement-bg: #f7e2c9;
+    --wrong: #a3211a;
+    --wrong-bg: #fbdedb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Times New Roman", Times, serif;
+    line-height: 1.55;
+    font-size: 17px;
+  }
+  code, .mono, button, .tag, input {
+    font-family: "JetBrains Mono", "Consolas", monospace;
+  }
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 20px 24px;
+  }
+  header h1 {
+    margin: 0 0 4px 0;
+    font-size: 25px;
+    font-weight: bold;
+  }
+  header p.sub {
+    margin: 0;
+    color: #cfd8ea;
+    font-size: 15px;
+  }
+  .student-bar {
+    background: var(--panel);
+    border-bottom: 2px solid var(--line);
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+  .student-bar label {
+    font-size: 14px;
+    color: var(--muted);
+    margin-right: 6px;
+  }
+  .student-bar input[type=text] {
+    padding: 8px 10px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    font-size: 15px;
+    min-width: 200px;
+  }
+  .class-chip {
+    padding: 7px 14px;
+    border: 2px solid var(--line);
+    border-radius: 20px;
+    background: var(--panel);
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .class-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  nav.tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 24px 0;
+    background: var(--panel);
+    border-bottom: 2px solid var(--line);
+    flex-wrap: wrap;
+  }
+  nav.tabs button {
+    background: var(--bg);
+    border: 2px solid var(--line);
+    border-bottom: none;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+  }
+  nav.tabs button.active {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  nav.tabs button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .criteria-box {
+    background: var(--accent-light);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .criteria-box summary {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--accent);
+  }
+  .criteria-box ul { margin: 12px 0 0 0; padding-left: 20px; }
+  .criteria-box li { margin-bottom: 8px; font-size: 16px; }
+
+  .progress-line { font-size: 15px; color: var(--muted); margin-bottom: 10px; font-weight: bold; }
+
+  .card {
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    padding: 26px;
+    margin-bottom: 18px;
+  }
+  .card .scenario { font-size: 21px; margin-bottom: 20px; }
+  .teacher-scenario {
+    font-size: 20px;
+    font-weight: bold;
+    background: var(--accent-light);
+    border-left: 6px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 18px;
+  }
+  .choices { display: grid; gap: 12px; }
+  .choice-btn {
+    padding: 15px 16px;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    text-align: left;
+    cursor: pointer;
+    font-size: 17px;
+    font-family: "Times New Roman", Times, serif;
+    color: var(--ink);
+  }
+  .choice-btn:hover { border-color: var(--accent); }
+  .choice-btn.correct { border-color: var(--unsupervised); background: var(--unsupervised-bg); font-weight: bold; }
+  .choice-btn.incorrect { border-color: var(--wrong); background: var(--wrong-bg); }
+  .choice-btn:disabled { cursor: default; }
+
+  .explain {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-left: 6px solid var(--accent);
+    background: var(--accent-light);
+    font-size: 16px;
+    display: none;
+    border-radius: 0 8px 8px 0;
+  }
+  .explain.shown { display: block; }
+  .explain .type-label { font-weight: bold; font-size: 17px; }
+
+  .card-footer { display: flex; justify-content: flex-end; margin-top: 18px; }
+  .next-btn, .action-btn, .check-btn {
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .next-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .summary-box {
+    background: var(--panel);
+    border: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 28px;
+    text-align: center;
+  }
+  .summary-box .score { font-size: 42px; font-weight: bold; margin: 12px 0; color: var(--accent); }
+  .restart-btn {
+    margin-top: 14px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    border: 2px solid var(--line);
+    background: var(--panel);
+    cursor: pointer;
+    font-size: 15px;
+  }
+  .export-row { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .export-row button {
+    padding: 11px 18px;
+    border-radius: 8px;
+    border: 2px solid var(--line);
+    background: var(--panel);
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .review-list { text-align: left; margin-top: 20px; }
+  .review-item {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 15px;
+    border-left: 6px solid var(--line);
+  }
+  .review-item.ok { border-left-color: var(--unsupervised); background: var(--unsupervised-bg); }
+  .review-item.bad { border-left-color: var(--wrong); background: var(--wrong-bg); }
+
+  footer.disclaimer {
+    max-width: 820px; margin: 0 auto; padding: 0 20px 40px;
+    color: var(--muted); font-size: 13px; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Виды машинного обучения — Урок 1</h1>
+  <p class="sub">11 класс · 10.1.2.5 — классификация видов машинного обучения</p>
+</header>
+
+<div class="student-bar">
+  <div>
+    <label>Ученик:</label>
+    <input type="text" id="student-name" placeholder="Фамилия Имя" oninput="saveStudentInfo()">
+  </div>
+  <div>
+    <label>Класс:</label>
+    <span class="class-chip" id="chip-11a" onclick="setClass('11А')">11А</span>
+    <span class="class-chip" id="chip-11b" onclick="setClass('11Б')">11Б</span>
+    <input type="text" id="student-class" placeholder="или свой вариант" style="min-width:120px;" oninput="saveStudentInfo()">
+  </div>
+</div>
+
+<nav class="tabs">
+  <button id="tab-types" class="active" onclick="switchTab('types')">Виды обучения</button>
+  <button id="tab-teacher" onclick="switchTab('teacher')">Что такое «учитель»?</button>
+  <button id="tab-control" onclick="switchTab('control')">Контроль</button>
+</nav>
+
+<main>
+
+  <details class="criteria-box" id="criteria-box">
+    <summary>Критерии различения (подсказка)</summary>
+    <ul>
+      <li><strong>С учителем</strong> — есть готовые примеры с известным правильным ответом (меткой), модель учится предсказывать метку для новых случаев.</li>
+      <li><strong>Без учителя</strong> — меток нет, модель сама ищет структуру, группы или закономерности в данных.</li>
+      <li><strong>С подкреплением</strong> — модель (агент) действует в среде и получает награду или штраф за свои действия, обучаясь через пробы и ошибки.</li>
+    </ul>
+  </details>
+
+  <section id="view-types" class="view active">
+    <div class="progress-line" id="types-progress"></div>
+    <div id="types-card-area"></div>
+    <div id="types-summary-area"></div>
+  </section>
+
+  <section id="view-teacher" class="view">
+    <div class="progress-line" id="teacher-progress"></div>
+    <div id="teacher-card-area"></div>
+    <div id="teacher-summary-area"></div>
+  </section>
+
+  <section id="view-control" class="view">
+    <p style="color:var(--muted); font-size:15px;">Режим контроля: 10 вопросов без подсказок.</p>
+    <div class="progress-line" id="control-progress"></div>
+    <div id="control-card-area"></div>
+    <div id="control-summary-area"></div>
+  </section>
+
+</main>
+
+<footer class="disclaimer">Результаты сохраняются в этом браузере отдельно по разделам и ученикам. Экспорт — в текстовый файл (.txt), совместимый с Excel.</footer>
+
+<script>
+const typeNames = { supervised: "С учителем", unsupervised: "Без учителя", reinforcement: "С подкреплением" };
+
+/* ===================== БАНК ВОПРОСОВ: ВИДЫ ОБУЧЕНИЯ (30) ===================== */
+const typesBank = [
+  { text: "Фильтр спама: модель обучена на письмах, уже помеченных как «спам» и «не спам».", type: "supervised", explain: "Каждое письмо в обучающих данных имеет готовую метку — модель учится предсказывать её." },
+  { text: "Прогноз цены квартиры по площади, району и этажу на основе уже проданных квартир с известной ценой.", type: "supervised", explain: "Цена — известный правильный ответ для каждой обучающей квартиры." },
+  { text: "Диагностика заболевания по снимку МРТ на основе снимков с уже подтверждённым диагнозом.", type: "supervised", explain: "Диагноз для каждого снимка известен заранее — это метка, по которой обучается модель." },
+  { text: "Распознавание рукописных цифр: у каждой картинки в обучающем наборе указано, какая это цифра.", type: "supervised", explain: "Правильная цифра указана для каждого изображения — классика обучения с учителем." },
+  { text: "Определение тональности отзыва (положительный/отрицательный) на основе отзывов, размеченных людьми.", type: "supervised", explain: "Метка «положительный/отрицательный» проставлена заранее." },
+  { text: "Прогноз урожайности пшеницы по погодным данным на основе прошлых лет с известным урожаем.", type: "supervised", explain: "Урожай прошлых лет известен — это эталон для обучения." },
+  { text: "Определение вида растения по фотографии листа на основе уже подписанных ботаником образцов.", type: "supervised", explain: "Вид растения указан для каждого обучающего образца." },
+  { text: "Прогноз результата футбольного матча по статистике команд на основе прошлых игр с известным исходом.", type: "supervised", explain: "Исход прошлых матчей известен — модель учится на этих примерах." },
+  { text: "Оценка кредитоспособности клиента на основе прошлых клиентов, о которых уже известно, вернули они кредит или нет.", type: "supervised", explain: "Известный факт «вернул/не вернул» — это метка для обучения." },
+  { text: "Распознавание лиц на фотографиях, где для каждого лица заранее указано имя человека.", type: "supervised", explain: "Имя человека — известная метка для каждого лица в обучающих данных." },
+
+  { text: "Разделение покупателей интернет-магазина на группы по покупкам, без заранее заданных категорий.", type: "unsupervised", explain: "Никто не говорит модели, какие группы должны получиться — она сама находит структуру." },
+  { text: "Группировка новостных статей по темам, когда темы заранее не определены.", type: "unsupervised", explain: "Меток «тема статьи» нет — модель сама объединяет похожие статьи." },
+  { text: "Поиск подозрительных операций среди тысяч банковских транзакций без готовых примеров мошенничества.", type: "unsupervised", explain: "Модель ищет операции, которые сильно отличаются от общей массы." },
+  { text: "Сжатие фотографии за счёт объединения похожих оттенков цвета в один.", type: "unsupervised", explain: "Модель группирует похожие пиксели по цвету самостоятельно." },
+  { text: "Поиск скрытых сообществ пользователей в социальной сети на основе того, кто с кем общается.", type: "unsupervised", explain: "Сообщества заранее не заданы — алгоритм сам находит плотно связанные группы." },
+  { text: "Группировка похожих товаров в интернет-магазине без заранее заданных категорий товаров.", type: "unsupervised", explain: "Категории не заданы — модель сама выделяет похожие товары." },
+  { text: "Выделение основных тем в большом наборе документов без какой-либо предварительной разметки.", type: "unsupervised", explain: "Темы не заданы заранее — они рождаются из самих данных." },
+  { text: "Разделение музыкальных треков на группы по звучанию без указания жанра для каждого трека.", type: "unsupervised", explain: "Жанр не указан — модель группирует по сходству звучания." },
+  { text: "Поиск необычных показаний датчиков на заводе без готового списка типов поломок.", type: "unsupervised", explain: "Список поломок не задан — модель ищет то, что выделяется среди обычных показаний." },
+  { text: "Группировка учеников по уровню усвоения материала без заранее заданных уровней.", type: "unsupervised", explain: "Уровни не заданы заранее — они выявляются из данных о результатах." },
+
+  { text: "Обучение бота играть в шахматы: он получает очки за выигрыш партии и штраф за поражение.", type: "reinforcement", explain: "Очки — награда за действия агента по итогу партии." },
+  { text: "Обучение робота-пылесоса убирать комнату: штраф за столкновение со стеной, награда за убранную площадь.", type: "reinforcement", explain: "Робот пробует действия в среде и корректирует поведение по награде/штрафу." },
+  { text: "Обучение системы автопилота автомобиля принимать решения на дороге на основе множества пробных поездок.", type: "reinforcement", explain: "Система обучается через взаимодействие со средой и обратную связь." },
+  { text: "Обучение игрового бота проходить уровень, получая очки за каждое успешное действие.", type: "reinforcement", explain: "Очки — награда за действия бота в игровой среде." },
+  { text: "Обучение робота-манипулятора захватывать предметы методом проб и ошибок с наградой за удачный захват.", type: "reinforcement", explain: "Обучение происходит через взаимодействие со средой и награду за успех." },
+  { text: "Обучение дрона удерживать равновесие в воздухе: штраф за падение, награда за устойчивый полёт.", type: "reinforcement", explain: "Дрон подбирает действия методом проб и ошибок, ориентируясь на награду/штраф." },
+  { text: "Программа обучается играть в го, миллионы раз играя сама с собой и получая награду за выигрыш.", type: "reinforcement", explain: "Награда за исход партии — классическая схема обучения с подкреплением." },
+  { text: "Умный термостат подбирает температуру в доме, получая от жильцов обратную связь «комфортно / некомфортно».", type: "reinforcement", explain: "Обратная связь жильцов — это и есть награда/штраф для термостата-агента." },
+  { text: "Торговый алгоритм совершает сделки на бирже, получая прибыль или убыток как награду за свои решения.", type: "reinforcement", explain: "Прибыль/убыток — награда, на основе которой алгоритм корректирует стратегию." },
+  { text: "Персонаж в компьютерной игре обучается проходить уровень через многократные попытки, получая штраф за каждую «смерть».", type: "reinforcement", explain: "Штраф за неудачу и награда за успех — обучение через пробы и ошибки." }
+];
+
+/* ===================== БАНК ВОПРОСОВ: ЧТО ТАКОЕ «УЧИТЕЛЬ»? (12) ===================== */
+const teacherBank = [
+  { scenario: "Фильтр спама: модель обучена на письмах, которые люди заранее пометили как «спам» и «не спам».",
+    question: "Что в этой задаче служит «учителем» для модели?",
+    options: ["Метки «спам»/«не спам», проставленные людьми заранее", "Сам почтовый сервер, через который приходят письма", "Количество писем в ящике пользователя", "Скорость подключения к интернету"],
+    correct: 0, explain: "«Учитель» — это готовый правильный ответ (метка) для каждого примера." },
+  { scenario: "Прогноз цены квартиры по площади и району на основе уже проданных квартир с известной ценой.",
+    question: "Что здесь выступает эталоном (учителем), на который равняется модель?",
+    options: ["Известные цены уже проданных квартир", "Площадь квартиры", "Название района", "Дата размещения объявления"],
+    correct: 0, explain: "Модель учится предсказывать цену, потому что для обучающих квартир цена уже известна." },
+  { scenario: "Диагностика заболевания по снимку МРТ на основе снимков с уже подтверждённым диагнозом.",
+    question: "Что служит «учителем» модели?",
+    options: ["Подтверждённые диагнозы для прошлых снимков", "Разрешение (чёткость) снимка", "Возраст пациента", "Название клиники, где сделан снимок"],
+    correct: 0, explain: "Известный диагноз для каждого прошлого снимка — готовый правильный ответ." },
+  { scenario: "Оценка кредитоспособности клиента на основе прошлых клиентов, о которых уже известно, вернули они кредит или нет.",
+    question: "Что здесь роль «учителя»?",
+    options: ["Известный факт «вернул/не вернул кредит» по прошлым клиентам", "Размер запрашиваемого кредита", "Название банка", "Возраст клиента"],
+    correct: 0, explain: "Модель учится предсказывать возврат кредита, опираясь на уже известный исход." },
+  { scenario: "Разделение покупателей интернет-магазина на группы по покупкам без заранее заданных категорий.",
+    question: "Почему здесь нет «учителя»?",
+    options: ["Никто заранее не указал, какие группы должны получиться", "У магазина слишком мало покупателей", "Компьютер не справляется с расчётами", "Покупки нельзя анализировать без интернета"],
+    correct: 0, explain: "«Учителя» нет, потому что нет готового правильного ответа — модель сама ищет структуру." },
+  { scenario: "Поиск подозрительных операций среди тысяч банковских транзакций без единого подтверждённого примера мошенничества.",
+    question: "Почему это обучение без учителя?",
+    options: ["Готовых, заранее подтверждённых примеров мошенничества нет", "Мошенничество запрещено законом", "Банки не хранят такие данные", "Транзакций слишком много, чтобы их разметить"],
+    correct: 0, explain: "Без достоверных примеров модель не может учиться «с учителем» — она ищет то, что выделяется среди остальных." },
+  { scenario: "Группировка новостных статей по темам, когда темы заранее не определены.",
+    question: "Чего здесь не хватает, из-за чего это обучение без учителя?",
+    options: ["Заранее заданных меток темы для каждой статьи", "Достаточного количества статей", "Доступа к интернету", "Заголовков статей"],
+    correct: 0, explain: "Без заданных тем модель сама группирует похожие по смыслу статьи." },
+  { scenario: "Поиск скрытых сообществ пользователей в социальной сети по тому, кто с кем общается.",
+    question: "Почему это без учителя?",
+    options: ["Сообщества заранее не заданы и не помечены", "В сети слишком много пользователей", "Общение в сети анонимно", "Алгоритм не умеет считать связи"],
+    correct: 0, explain: "Заранее заданных «правильных» сообществ нет — алгоритм сам находит связанные группы." },
+  { scenario: "Обучение робота-пылесоса убирать комнату: штраф за столкновение со стеной, награда за убранную площадь.",
+    question: "Что здесь играет роль награды/штрафа?",
+    options: ["Штраф за столкновение и польза от убранной площади", "Инструкция производителя робота", "Расписание уборки, заданное хозяином", "Название модели робота"],
+    correct: 0, explain: "Робот подбирает поведение методом проб и ошибок, ориентируясь на награду/штраф." },
+  { scenario: "Обучение бота играть в шахматы: он получает очки за выигрыш партии и штраф за поражение.",
+    question: "Что здесь награда?",
+    options: ["Очки за выигрыш и штраф за поражение", "Правила шахмат, записанные в книге", "Время, отведённое на партию", "Количество фигур на доске в начале игры"],
+    correct: 0, explain: "Награда/штраф начисляется по итогу партии — на них ориентируется бот." },
+  { scenario: "Обучение системы автопилота автомобиля принимать решения на дороге через множество пробных поездок.",
+    question: "Как здесь проявляется обучение через награду?",
+    options: ["Система корректирует поведение по обратной связи за безопасные и опасные действия", "Система изучает правила дорожного движения по учебнику", "Инженеры вручную прописывают каждое действие", "Система работает только днём"],
+    correct: 0, explain: "Обучение с подкреплением строится на взаимодействии со средой и обратной связи за действия." },
+  { scenario: "Обучение дрона удерживать равновесие в воздухе: за падение дрон получает штраф, за устойчивый полёт — награду.",
+    question: "Что здесь роль учителя/эталона?",
+    options: ["Здесь нет учителя в привычном смысле — дрон учится через награду и штраф", "Инженер, который управляет дроном вручную", "Инструкция по эксплуатации дрона", "Погодные условия во время полёта"],
+    correct: 0, explain: "Это не обучение с учителем и не без учителя — это третий вид: обучение с подкреплением." }
+];
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function loadJSON(key, fallback) { try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch (e) { return fallback; } }
+function saveJSON(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} }
+
+function saveStudentInfo() {
+  saveJSON("ml1_student_class", document.getElementById("student-class").value);
+}
+function setClass(cls) {
+  document.getElementById("student-class").value = cls;
+  document.getElementById("chip-11a").classList.toggle("active", cls === "11А");
+  document.getElementById("chip-11b").classList.toggle("active", cls === "11Б");
+  saveStudentInfo();
+}
+function getStudentInfo() {
+  const name = document.getElementById("student-name").value.trim() || "без_фамилии";
+  const cls = document.getElementById("student-class").value.trim() || "без_класса";
+  return { name, cls };
+}
+function initStudentBar() {
+  document.getElementById("student-name").value = "";
+  const cls = loadJSON("ml1_student_class", "");
+  document.getElementById("student-class").value = cls;
+  document.getElementById("chip-11a").classList.toggle("active", cls === "11А");
+  document.getElementById("chip-11b").classList.toggle("active", cls === "11Б");
+}
+
+function downloadText(filename, content) {
+  const blob = new Blob(["\uFEFF" + content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function switchTab(which) {
+  ["types", "teacher", "control"].forEach(t => {
+    document.getElementById("view-" + t).classList.toggle("active", t === which);
+    document.getElementById("tab-" + t).classList.toggle("active", t === which);
+  });
+  document.getElementById("criteria-box").style.display = which === "control" ? "none" : "";
+  if (which === "control") setControlLock(true);
+}
+function setControlLock(locked) {
+  document.getElementById("tab-types").disabled = locked;
+  document.getElementById("tab-teacher").disabled = locked;
+}
+
+/* ===================== ВКЛАДКА: ВИДЫ ОБУЧЕНИЯ ===================== */
+const TYPES_SESSION_LEN = 15;
+let typesOrder = [], typesIndex = 0, typesCorrect = 0, typesAnswered = false;
+
+function startTypes() {
+  typesOrder = shuffle(typesBank.map((c, i) => i)).slice(0, TYPES_SESSION_LEN);
+  typesIndex = 0; typesCorrect = 0;
+  document.getElementById("types-summary-area").innerHTML = "";
+  renderTypesCard();
+}
+function renderTypesCard() {
+  const area = document.getElementById("types-card-area");
+  const progress = document.getElementById("types-progress");
+  if (typesIndex >= typesOrder.length) { progress.textContent = ""; area.innerHTML = ""; showTypesSummary(); return; }
+  progress.textContent = "Задание " + (typesIndex + 1) + " из " + typesOrder.length;
+  const card = typesBank[typesOrder[typesIndex]];
+  typesAnswered = false;
+  const options = shuffle(["supervised", "unsupervised", "reinforcement"]);
+  area.innerHTML = `
+    <div class="card">
+      <div class="scenario">${card.text}</div>
+      <div class="choices" id="types-choices">
+        ${options.map(t => `<button class="choice-btn" data-type="${t}" onclick="answerTypes('${t}')">${typeNames[t]}</button>`).join("")}
+      </div>
+      <div class="explain" id="types-explain"></div>
+      <div class="card-footer"><button class="next-btn" id="types-next" disabled onclick="typesIndex++; renderTypesCard();">Далее</button></div>
+    </div>`;
+}
+function answerTypes(chosen) {
+  if (typesAnswered) return;
+  typesAnswered = true;
+  const card = typesBank[typesOrder[typesIndex]];
+  const correct = chosen === card.type;
+  if (correct) typesCorrect++;
+  document.querySelectorAll("#types-choices .choice-btn").forEach(btn => {
+    btn.disabled = true;
+    if (btn.dataset.type === card.type) btn.classList.add("correct");
+    else if (btn.dataset.type === chosen) btn.classList.add("incorrect");
+  });
+  const box = document.getElementById("types-explain");
+  box.classList.add("shown");
+  box.innerHTML = `<span class="type-label">${correct ? "Верно." : "Неверно."} Правильный ответ: ${typeNames[card.type]}.</span><br>${card.explain}`;
+  document.getElementById("types-next").disabled = false;
+}
+function showTypesSummary() {
+  const { name, cls } = getStudentInfo();
+  const results = loadJSON("ml1_types_results", []);
+  results.push({ date: new Date().toLocaleString("ru-RU"), name, cls, correct: typesCorrect, total: typesOrder.length });
+  saveJSON("ml1_types_results", results);
+  document.getElementById("types-summary-area").innerHTML = `
+    <div class="summary-box">
+      <div>Раздел завершён</div>
+      <div class="score">${typesCorrect} / ${typesOrder.length}</div>
+      <button class="restart-btn" onclick="startTypes()">Пройти ещё раз (новые вопросы)</button>
+      <div class="export-row"><button onclick="exportSection('types')">Экспорт результата (.txt)</button></div>
+    </div>`;
+}
+
+/* ===================== ВКЛАДКА: ЧТО ТАКОЕ «УЧИТЕЛЬ»? ===================== */
+let teacherOrder = [], teacherIndex = 0, teacherCorrect = 0, teacherAnswered = false;
+
+function startTeacher() {
+  teacherOrder = shuffle(teacherBank.map((c, i) => i));
+  teacherIndex = 0; teacherCorrect = 0;
+  document.getElementById("teacher-summary-area").innerHTML = "";
+  renderTeacherCard();
+}
+function renderTeacherCard() {
+  const area = document.getElementById("teacher-card-area");
+  const progress = document.getElementById("teacher-progress");
+  if (teacherIndex >= teacherOrder.length) { progress.textContent = ""; area.innerHTML = ""; showTeacherSummary(); return; }
+  progress.textContent = "Вопрос " + (teacherIndex + 1) + " из " + teacherOrder.length;
+  const q = teacherBank[teacherOrder[teacherIndex]];
+  teacherAnswered = false;
+  const optOrder = shuffle(q.options.map((o, i) => i));
+  area.innerHTML = `
+    <div class="card">
+      <div class="teacher-scenario">${q.scenario}</div>
+      <div class="scenario">${q.question}</div>
+      <div class="choices" id="teacher-choices">
+        ${optOrder.map(i => `<button class="choice-btn" data-idx="${i}" onclick="answerTeacher(${i})">${q.options[i]}</button>`).join("")}
+      </div>
+      <div class="explain" id="teacher-explain"></div>
+      <div class="card-footer"><button class="next-btn" id="teacher-next" disabled onclick="teacherIndex++; renderTeacherCard();">Далее</button></div>
+    </div>`;
+}
+function answerTeacher(chosenIdx) {
+  if (teacherAnswered) return;
+  teacherAnswered = true;
+  const q = teacherBank[teacherOrder[teacherIndex]];
+  const correct = chosenIdx === q.correct;
+  if (correct) teacherCorrect++;
+  document.querySelectorAll("#teacher-choices .choice-btn").forEach(btn => {
+    btn.disabled = true;
+    const idx = parseInt(btn.dataset.idx);
+    if (idx === q.correct) btn.classList.add("correct");
+    else if (idx === chosenIdx) btn.classList.add("incorrect");
+  });
+  const box = document.getElementById("teacher-explain");
+  box.classList.add("shown");
+  box.innerHTML = `<span class="type-label">${correct ? "Верно." : "Неверно."}</span><br>${q.explain}`;
+  document.getElementById("teacher-next").disabled = false;
+}
+function showTeacherSummary() {
+  const { name, cls } = getStudentInfo();
+  const results = loadJSON("ml1_teacher_results", []);
+  results.push({ date: new Date().toLocaleString("ru-RU"), name, cls, correct: teacherCorrect, total: teacherOrder.length });
+  saveJSON("ml1_teacher_results", results);
+  document.getElementById("teacher-summary-area").innerHTML = `
+    <div class="summary-box">
+      <div>Раздел завершён</div>
+      <div class="score">${teacherCorrect} / ${teacherOrder.length}</div>
+      <button class="restart-btn" onclick="startTeacher()">Пройти ещё раз (новый порядок)</button>
+      <div class="export-row"><button onclick="exportSection('teacher')">Экспорт результата (.txt)</button></div>
+    </div>`;
+}
+
+/* ===================== ВКЛАДКА: КОНТРОЛЬ (10 вопросов из обоих модулей, оценка 0-10) ===================== */
+const CONTROL_LEN = 10;
+const controlPool = [
+  ...typesBank.map(c => ({ kind: "classify", text: c.text, type: c.type })),
+  ...teacherBank.map(q => ({ kind: "teacher", scenario: q.scenario, question: q.question, options: q.options, correct: q.correct }))
+];
+let controlOrder = [], controlIndex = 0, controlAnswers = [];
+
+function startControl() {
+  controlOrder = shuffle(controlPool.map((c, i) => i)).slice(0, CONTROL_LEN);
+  controlIndex = 0; controlAnswers = [];
+  document.getElementById("control-summary-area").innerHTML = "";
+  if (document.getElementById("tab-control").classList.contains("active")) setControlLock(true);
+  renderControlCard();
+}
+function renderControlCard() {
+  const area = document.getElementById("control-card-area");
+  const progress = document.getElementById("control-progress");
+  if (controlIndex >= controlOrder.length) { progress.textContent = ""; area.innerHTML = ""; showControlSummary(); return; }
+  progress.textContent = "Вопрос " + (controlIndex + 1) + " из " + controlOrder.length;
+  const item = controlPool[controlOrder[controlIndex]];
+  if (item.kind === "classify") {
+    const options = shuffle(["supervised", "unsupervised", "reinforcement"]);
+    area.innerHTML = `
+      <div class="card">
+        <div class="scenario">${item.text}</div>
+        <div class="choices" id="control-choices">
+          ${options.map(t => `<button class="choice-btn" data-type="${t}" onclick="answerControlClassify('${t}')">${typeNames[t]}</button>`).join("")}
+        </div>
+      </div>`;
+  } else {
+    const optOrder = shuffle(item.options.map((o, i) => i));
+    area.innerHTML = `
+      <div class="card">
+        <div class="teacher-scenario">${item.scenario}</div>
+        <div class="scenario" style="font-size:18px;">${item.question}</div>
+        <div class="choices" id="control-choices">
+          ${optOrder.map(i => `<button class="choice-btn" data-idx="${i}" onclick="answerControlTeacher(${i})">${item.options[i]}</button>`).join("")}
+        </div>
+      </div>`;
+  }
+}
+function answerControlClassify(chosen) {
+  const item = controlPool[controlOrder[controlIndex]];
+  const correct = chosen === item.type;
+  controlAnswers.push({ text: item.text, correctLabel: typeNames[item.type], chosenLabel: typeNames[chosen], correct });
+  controlIndex++;
+  renderControlCard();
+}
+function answerControlTeacher(chosenIdx) {
+  const item = controlPool[controlOrder[controlIndex]];
+  const correct = chosenIdx === item.correct;
+  controlAnswers.push({ text: item.scenario + " — " + item.question, correctLabel: item.options[item.correct], chosenLabel: item.options[chosenIdx], correct });
+  controlIndex++;
+  renderControlCard();
+}
+function showControlSummary() {
+  const { name, cls } = getStudentInfo();
+  const score = controlAnswers.filter(a => a.correct).length;
+  const results = loadJSON("ml1_control_results", []);
+  results.push({ date: new Date().toLocaleString("ru-RU"), name, cls, score, total: controlOrder.length });
+  saveJSON("ml1_control_results", results);
+  setControlLock(false);
+
+  const reviewHtml = controlAnswers.map(a => `
+    <div class="review-item ${a.correct ? "ok" : "bad"}">
+      ${a.text}<br>
+      <strong>Ответ ученика:</strong> ${a.chosenLabel}${a.correct ? "" : ` — <strong>верно:</strong> ${a.correctLabel}`}
+    </div>`).join("");
+
+  document.getElementById("control-summary-area").innerHTML = `
+    <div class="summary-box">
+      <div>Контроль завершён</div>
+      <div class="score">Оценка: ${score} / 10</div>
+      <button class="restart-btn" onclick="startControl()">Пройти ещё раз (новые вопросы)</button>
+      <div class="export-row"><button onclick="exportSection('control')">Экспорт результата (.txt)</button></div>
+      <div class="review-list">${reviewHtml}</div>
+    </div>`;
+}
+
+/* ===================== ЭКСПОРТ ===================== */
+function exportSection(section) {
+  const { name, cls } = getStudentInfo();
+  let key, header, label;
+  if (section === "types") { key = "ml1_types_results"; header = "Дата\tУченик\tКласс\tПравильно\tВсего"; label = "виды_обучения"; }
+  if (section === "teacher") { key = "ml1_teacher_results"; header = "Дата\tУченик\tКласс\tПравильно\tВсего"; label = "что_такое_учитель"; }
+  if (section === "control") { key = "ml1_control_results"; header = "Дата\tУченик\tКласс\tОценка(из 10)\tВсего вопросов"; label = "контроль"; }
+  let results = loadJSON(key, []);
+  // если фамилию/класс вписали уже после прохождения — подставляем их в записи, где они ещё не указаны
+  results = results.map(r => ({
+    ...r,
+    name: (!r.name || r.name === "без_фамилии") ? name : r.name,
+    cls: (!r.cls || r.cls === "без_класса") ? cls : r.cls
+  }));
+  saveJSON(key, results);
+  let txt = header + "\n";
+  results.forEach(r => {
+    if (section === "control") txt += `${r.date}\t${r.name}\t${r.cls}\t${r.score}\t${r.total}\n`;
+    else txt += `${r.date}\t${r.name}\t${r.cls}\t${r.correct}\t${r.total}\n`;
+  });
+  downloadText(`урок1_${label}_${name}_${cls}.txt`, txt);
+}
+
+initStudentBar();
+startTypes();
+startTeacher();
+startControl();
+</script>
+
+</body>
+</html>
