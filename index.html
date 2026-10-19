@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>СОЧ за 1 четверть: Информатика и ИИ, 11 класс</title>
+<style>
+:root{--bg:#f3f6f4;--sf:#fff;--tx:#14231c;--mu:#5b6b63;--ac:#0b7a5c;--ac2:#e8f4ef;--bd:#cfdad4;--er:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101a16;--sf:#18251f;--tx:#e6f0eb;--mu:#93a69c;--ac:#3fc79c;--ac2:#1b3a2f;--bd:#2c4339;--er:#ff8a80}}
+:root[data-theme="dark"]{--bg:#101a16;--sf:#18251f;--tx:#e6f0eb;--mu:#93a69c;--ac:#3fc79c;--ac2:#1b3a2f;--bd:#2c4339;--er:#ff8a80}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 Georgia,"Times New Roman",serif;-webkit-user-select:none;user-select:none}
+button,select,input{font:inherit}
+.w{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.7rem;line-height:1.2;margin:.2em 0}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:18px;margin:14px 0}
+.mu{color:var(--mu);font-size:.92rem}
+.btn{background:var(--ac);color:var(--bg);border:0;border-radius:8px;padding:11px 20px;cursor:pointer;font-weight:bold}
+.btn.o{background:none;color:var(--ac);border:1px solid var(--ac)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+input[type=text]{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);user-select:text;-webkit-user-select:text}
+input.n{width:90px;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);user-select:text;-webkit-user-select:text}
+select{padding:7px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);max-width:100%}
+#top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 16px;flex-wrap:wrap}
+#tm{font-size:1.3rem;font-weight:bold;font-variant-numeric:tabular-nums}
+#tm.low{color:var(--er)}
+.bar{height:6px;background:var(--bd);border-radius:3px;flex:1;min-width:100px}.bar i{display:block;height:100%;background:var(--ac);border-radius:3px}
+.q{margin:0 0 6px;font-weight:bold}
+.pt{color:var(--mu);font-weight:normal;font-size:.85rem}
+label.o{display:block;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;margin:6px 0;cursor:pointer}
+label.o:has(input:checked){background:var(--ac2);border-color:var(--ac)}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--bd)}
+.row:last-child{border:0}
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.nav button{width:36px;height:36px;border-radius:6px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer}
+.nav button.d{background:var(--ac2);border-color:var(--ac)}.nav button.c{outline:2px solid var(--ac)}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.9);color:#fff;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:99}
+#ov div,#cf div{max-width:460px}#cf{position:fixed;inset:0;background:rgba(0,0,0,.85);color:#fff;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:98}
+.ok{color:var(--ac)}.bad{color:var(--er)}
+.hint{margin-top:12px;padding:10px 12px;border-left:3px solid var(--ac);background:var(--ac2);border-radius:6px;font-size:.95rem}.calc{margin-top:14px;padding:12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}.calc input{width:100%;margin:8px 0;padding:10px;font-size:1.15rem;text-align:right;border:1px solid var(--bd);border-radius:8px;background:var(--sf);color:var(--tx);user-select:text;-webkit-user-select:text}.ck{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.ck button{padding:10px 0;font-size:1.05rem;border:1px solid var(--bd);border-radius:8px;background:var(--sf);color:var(--tx);cursor:pointer}.ck button.eq{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.hide{display:none}
+</style></head><body>
+<div id="ov"><div><h1>Работа приостановлена</h1><p id="ovt"></p><p>Время продолжает идти. Нарушение записано в протокол.</p><button class="btn" id="back">Вернуться в полноэкранный режим</button></div></div>
+
+<div id="cf"><div><h1>Завершить работу?</h1><p id="cu"></p><p>После сдачи изменить ответы будет нельзя.</p><button class="btn" id="cy">Сдать работу</button> <button class="btn o" id="cn" style="background:#fff">Продолжить</button></div></div>
+<div id="s0" class="w">
+<h1>Суммативное оценивание за 1 четверть</h1>
+<p class="mu">Информатика и ИИ · 11 класс · Тема четверти: «Искусственный интеллект»</p>
+<div class="card">
+<p><b>Время:</b> 45 минут. <b>Баллы:</b> 25. <b>Заданий:</b> 20.</p>
+<p><b>Правила:</b></p>
+<ul>
+<li>Работа открывается на весь экран. Выход из полноэкранного режима, переключение вкладки или окна, сворачивание браузера фиксируются в протоколе.</li>
+<li>После 3 нарушений работа завершается автоматически.</li>
+<li>Копирование, вставка и контекстное меню отключены.</li>
+<li>Между заданиями можно переходить свободно, ответы сохраняются до сдачи.</li>
+<li>В заданиях с вычислениями доступен встроенный калькулятор.</li>
+<li>Варианты заданий выбираются случайно из банка вопросов, поэтому у соседей по классу они могут отличаться.</li>
+</ul>
+<p>Фамилия и имя:</p>
+<input type="text" id="nm" maxlength="60" autocomplete="off">
+<p>Класс:</p>
+<input type="text" id="cl" maxlength="10" autocomplete="off" placeholder="например, 11А">
+<p><button class="btn" id="go">Начать работу</button></p>
+<p id="er" class="bad"></p>
+</div></div>
+
+<div id="s1" class="hide">
+<div id="top"><span id="pg" class="mu"></span><div class="bar"><i id="pb" style="width:0"></i></div><span id="tm">45:00</span><button class="btn o" id="fin">Завершить работу</button></div>
+<div class="w"><div class="nav" id="nav"></div><div id="qa" class="card"></div>
+<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+<button class="btn o" id="pv">Назад</button><button class="btn" id="nx">Далее</button></div></div></div>
+
+<div id="s2" class="hide w"></div>
+
+<script>
+const Q0=[
+{t:'s',p:1,q:'Какой слой искусственной нейронной сети принимает исходные данные?',o:['Скрытый слой','Входной слой','Выходной слой','Слой активации'],a:1},
+{t:'s',p:1,q:'Какую роль выполняют скрытые слои нейронной сети?',o:['Выводят итоговый результат пользователю','Хранят обучающую выборку','Преобразуют данные и выделяют признаки между входом и выходом','Только копируют входные данные'],a:2},
+{t:'m',p:2,q:'Выберите все верные утверждения об архитектуре нейронной сети.',o:['В сети всегда есть входной и выходной слои','Число нейронов входного слоя связано с числом входных признаков','Скрытых слоёв должно быть ровно один','Сеть с несколькими скрытыми слоями называют глубокой'],a:[0,1,3]},
+{t:'s',p:1,q:'Какое значение принимает функция единичного скачка?',o:['Любое число от 0 до 1','Только 0 или 1','Любое неотрицательное число','Любое число от −1 до 1'],a:1},
+{t:'s',p:1,q:'Какое утверждение о функции ReLU верно?',o:['Для отрицательных x она возвращает 0, для положительных — само x','Её значения всегда лежат в интервале (0; 1)','Она возвращает только 0 или 1','Она возвращает −x для положительных x'],a:0},
+{t:'x',q:'Сопоставьте функцию активации и её особенность.',L:['Функция единичного скачка','Sigmoid','ReLU'],C:['Плавно переводит любое число в интервал (0; 1), удобна для вероятностей','Простая и быстрая, часто применяется в скрытых слоях глубоких сетей','Даёт жёсткий ответ «да/нет», использовалась в первых перцептронах'],a:[2,0,1]},
+{t:'n',q:'Вычислите значения функций активации (дробные числа записывайте через точку).',F:[['Функция единичного скачка при x = −2 (порог 0)',0],['ReLU(4)',4],['ReLU(−7)',0],['Sigmoid(0)',0.5]]},
+{t:'x',q:'Определите задачу, которую решает нейронная сеть.',L:['Предсказание стоимости квартиры по площади и району','Отнесение письма к категории «спам» или «не спам»','Нахождение лица человека на фотографии'],C:['Классификация','Регрессия','Распознавание образов'],a:[1,0,2]},
+{t:'x',q:'Определите область применения технологии ИИ.',L:['Поиск брака на конвейере по снимкам с камеры','Автоматический перевод текста с казахского на русский','Создание изображения по текстовому описанию','Озвучивание текста голосом диктора'],C:['Компьютерное зрение','Обработка естественного языка','Генеративные модели','Синтез речи'],a:[0,1,2,3]},
+{t:'s',p:1,q:'Какой элемент НЕ входит в структуру перцептрона?',o:['Входы','Веса','Активационная функция','Обучающая выборка как часть самого нейрона'],a:3},
+{t:'n',q:'Перцептрон имеет входы x₁ = 1, x₂ = 1, x₃ = 0 и веса w₁ = 0,4, w₂ = 0,3, w₃ = 0,9. Активационная функция — единичный скачок с порогом 0,5 (выход 1, если сумма ≥ 0,5). Смещения нет. Дробные числа записывайте через точку.',F:[['Взвешенная сумма входов',0.7],['Выход перцептрона',1]]},
+{t:'x',q:'Определите вид машинного обучения.',L:['Разбиение клиентов магазина на группы без заранее заданных меток','Обучение по фотографиям, на которых указано «кошка» или «собака»','Робот проходит лабиринт и получает награду за верные шаги'],C:['Обучение с учителем','Обучение без учителя','Обучение с подкреплением'],a:[1,0,2]},
+{t:'m',p:2,q:'Выберите все верные утверждения о машинном обучении.',o:['При обучении с учителем данные имеют правильные ответы (метки)','При обучении без учителя модель ищет структуру в данных без меток','При обучении с подкреплением агент получает награду или штраф за действия','Классификация относится только к обучению с подкреплением'],a:[0,1,2]},
+{t:'n',q:'Полносвязная сеть: 4 входных нейрона, два скрытых слоя (5 и 3 нейрона), 2 выходных нейрона. Каждый нейрон слоя соединён со всеми нейронами следующего слоя. Смещения не учитываются.',F:[['Число весов (связей) в сети',41]]},
+{t:'n',q:'Вычислите значения Sigmoid(x) = 1 / (1 + e^(−x)). Округлите до тысячных. Дробные числа записывайте через точку.',F:[['Sigmoid(1)',0.7311,0.005],['Sigmoid(−1)',0.2689,0.005]]},
+{t:'s',q:'Почему ReLU часто выбирают для скрытых слоёв глубоких сетей?',o:['Она вычисляется очень просто и не «насыщается» при положительных значениях, что облегчает обучение','Она всегда возвращает значение от 0 до 1, как вероятность','Она единственная функция, у которой бывает выход 0','Она подходит только для выходного слоя'],a:0},
+{t:'n',q:'Нейрон имеет входы x₁ = 2, x₂ = −1, веса w₁ = 0.5, w₂ = 1.5 и смещение b = −0.5. Сначала найдите z = x₁w₁ + x₂w₂ + b, затем значения функций активации от z. Дробные числа записывайте через точку.',F:[['z',-1],['Единичный скачок (порог 0): f(z)',0],['ReLU(z)',0],['Sigmoid(z), с точностью до сотых',0.2689,0.006]]},
+{t:'x',q:'Определите задачу, которую решает нейронная сеть.',L:['Определение сорта цветка по размерам лепестков','Прогноз температуры воздуха на завтра','Распознавание рукописных цифр на изображении','Прогноз количества продаж магазина в следующем месяце'],C:['Классификация','Регрессия','Распознавание образов'],a:[0,1,2,1]},
+{t:'x',q:'Определите вид машинного обучения.',L:['Алгоритм группирует новости по темам, не имея готовых тем','Спам-фильтр обучается на письмах с пометками «спам» и «не спам»','Программа учится играть в шахматы, получая награду за победу','Модель предсказывает цену по таблице, где цена известна для каждой записи'],C:['С учителем','Без учителя','С подкреплением'],a:[1,0,2,0]},
+{t:'m',q:'Выберите все примеры генеративных моделей.',o:['Модель, создающая изображение по текстовому описанию','Нейросеть, пишущая связный текст по запросу','Система распознавания лиц на проходной','Модель, сочиняющая музыкальную мелодию','Датчик, измеряющий температуру'],a:[0,1,3]}
+];
+const PTS=[1,1,1,1,1,1,2,1,2,1,2,1,1,1,2,1,2,1,1,1];
+Q0[6].h='Единичный скачок: f(x) = 1, если x ≥ 0 (порог), иначе f(x) = 0.<br>ReLU: f(x) = max(0; x).<br>Sigmoid: f(x) = 1 / (1 + e<sup>−x</sup>); при x = 0 получается e<sup>0</sup> = 1.';
+Q0[10].h='Взвешенная сумма: S = x₁·w₁ + x₂·w₂ + x₃·w₃.<br>Выход: y = 1, если S ≥ порога, иначе y = 0.';
+Q0[13].h='Число весов между двумя соседними слоями = n₁ · n₂ (n — число нейронов в слое).<br>Всего весов = (вход · 1-й скрытый) + (1-й скрытый · 2-й скрытый) + (2-й скрытый · выход).';
+Q0[14].h='Sigmoid(x) = 1 / (1 + e<sup>−x</sup>). В калькуляторе, например для x = 1: 1/(1+exp(-1)).';
+Q0[16].h='z = x₁·w₁ + x₂·w₂ + b.<br>Единичный скачок: f(z) = 1 при z ≥ 0, иначе 0.<br>ReLU(z) = max(0; z).<br>Sigmoid(z) = 1 / (1 + e<sup>−z</sup>).';
+/* ===== БАНК ВОПРОСОВ: Q0 — вариант 1, V[i] — варианты 2–4 для задания i+1 ===== */
+const HA=Q0[6].h,HP=Q0[10].h,HW=Q0[13].h,HS=Q0[14].h,HZ=Q0[16].h;
+const S=(q,o,a)=>({t:'s',q,o,a}),M=(q,o,a)=>({t:'m',q,o,a}),X=(q,L,C,a)=>({t:'x',q,L,C,a}),N=(q,F,h)=>({t:'n',q,F,h});
+const st=x=>x>=0?1:0,rl=x=>Math.max(0,x),sg=x=>Math.round(1e4/(1+Math.exp(-x)))/1e4,lab=v=>String(v).replace('-','−').replace('.',',');
+const CT=['Классификация','Регрессия','Распознавание образов'],CM=['Обучение с учителем','Обучение без учителя','Обучение с подкреплением'],CA=['Компьютерное зрение','Обработка естественного языка','Генеративные модели','Синтез речи'],CF=['Единичный скачок','Sigmoid','ReLU'];
+const A=(a,b,c,d)=>N('Вычислите значения функций активации (дробные числа записывайте через точку).',[['Единичный скачок (порог 0) при x = '+lab(a),st(a)],['ReLU('+lab(b)+')',rl(b)],['ReLU('+lab(c)+')',rl(c)],['Sigmoid('+lab(d)+'), с точностью до сотых',sg(d),0.006]],HA);
+const P=(x,w,T)=>{const s=Math.round(x.reduce((q,v,i)=>q+v*w[i],0)*1e6)/1e6;return N(`Перцептрон имеет входы x₁ = ${x[0]}, x₂ = ${x[1]}, x₃ = ${x[2]} и веса w₁ = ${lab(w[0])}, w₂ = ${lab(w[1])}, w₃ = ${lab(w[2])}. Активационная функция — единичный скачок с порогом ${lab(T)} (выход 1, если сумма ≥ ${lab(T)}). Смещения нет. Дробные числа записывайте через точку.`,[['Взвешенная сумма входов',s],['Выход перцептрона',s>=T?1:0]],HP)};
+const W=(l)=>N(`Полносвязная сеть. Число нейронов по слоям: ${l.join(' – ')} (входной, скрытые, выходной слои). Каждый нейрон слоя соединён со всеми нейронами следующего слоя. Смещения не учитываются.`,[['Число весов (связей) в сети',l.slice(1).reduce((s,v,i)=>s+v*l[i],0)]],HW);
+const G=(a,b)=>N('Вычислите значения Sigmoid(x) = 1 / (1 + e^(−x)). Округлите до тысячных. Дробные числа записывайте через точку.',[['Sigmoid('+lab(a)+')',sg(a),0.005],['Sigmoid('+lab(b)+')',sg(b),0.005]],HS);
+const Z=(x,w,b)=>{const z=x[0]*w[0]+x[1]*w[1]+b;return N(`Нейрон имеет входы x₁ = ${lab(x[0])}, x₂ = ${lab(x[1])}, веса w₁ = ${lab(w[0])}, w₂ = ${lab(w[1])} и смещение b = ${lab(b)}. Сначала найдите z = x₁w₁ + x₂w₂ + b, затем значения функций активации от z. Дробные числа записывайте через точку.`,[['z',z],['Единичный скачок (порог 0): f(z)',st(z)],['ReLU(z)',rl(z)],['Sigmoid(z), с точностью до сотых',sg(z),0.006]],HZ)};
+const V=[
+/*1*/[S('Какой слой нейронной сети выдаёт итоговый ответ (например, класс объекта)?',['Входной слой','Скрытый слой','Выходной слой','Первый скрытый слой'],2),
+S('Сколько нейронов должно быть во входном слое, если на вход подаётся изображение 8×8 пикселей и каждый пиксель — один признак?',['8','16','64','128'],2),
+S('Что передаёт каждый нейрон входного слоя следующему слою?',['Значение своего признака входных данных','Готовый ответ сети','Обучающую выборку целиком','Функцию активации'],0)],
+/*2*/[S('Что верно про слои нейронной сети?',['Нейроны одного слоя обычно связаны с нейронами соседнего слоя','Нейроны входного слоя связаны только друг с другом','Выходной слой стоит перед входным','Скрытые слои видны пользователю как результат'],0),
+S('Что означает слово «скрытый» в названии скрытого слоя?',['Слой не получает данных извне и не выдаёт ответ пользователю напрямую','Слой защищён паролем','Слой не участвует в вычислениях','Слой хранится отдельно от остальных'],0),
+S('Как называют нейронную сеть с несколькими скрытыми слоями?',['Однослойным перцептроном','Глубокой нейронной сетью','Входной сетью','Линейной регрессией'],1)],
+/*3*/[M('Выберите все верные утверждения о слоях сети.',['Входной слой получает исходные данные','Выходной слой формирует результат работы сети','При классификации на 3 класса в выходном слое часто 3 нейрона','В каждом скрытом слое обязан быть ровно один нейрон'],[0,1,2]),
+M('Выберите все верные утверждения о связях и весах.',['Каждая связь между нейронами имеет вес','Веса подбираются в процессе обучения','Веса пользователь задаёт вручную при каждом запуске сети','Нулевой вес означает, что вход не влияет на нейрон'],[0,1,3]),
+M('Выберите все верные утверждения о нейронной сети.',['Нейрон суммирует взвешенные входы и применяет функцию активации','У сети без скрытых слоёв только входной и выходной слои','Входной слой выполняет сложные преобразования признаков','Больше скрытых слоёв может помочь выделять более сложные признаки'],[0,1,3])],
+/*4*/[S('Для какого типа ответа подходит функция единичного скачка?',['Для бинарного решения «да/нет»','Для получения вероятности 0,37','Для вывода любых отрицательных чисел','Для плавного изменения выхода'],0),
+S('Чему равна функция единичного скачка (порог 0) при x = 0,3?',['0','0,3','1','−1'],2),
+S('Какой недостаток у функции единичного скачка?',['Выход резко меняется от 0 к 1, плавного перехода нет','Она выдаёт значения больше 1000','Она не определена для положительных x','Она всегда возвращает 0,5'],0)],
+/*5*/[S('Чему равна ReLU(−6)?',['−6','6','0','1'],2),
+S('Чему равна ReLU(3,5)?',['0','3,5','1','−3,5'],1),
+S('Какие значения может принимать ReLU?',['Только от 0 до 1','Любые неотрицательные числа','Только 0 или 1','Только отрицательные числа'],1)],
+/*6*/[X('Сопоставьте функцию активации и её особенность.',['Единичный скачок','Sigmoid','ReLU'],['Выход всегда в интервале (0; 1), функция гладкая','Выход равен 0 при x < 0 и x при x ≥ 0','Выход только 0 или 1'],[2,0,1]),
+X('Подберите функцию активации для каждой ситуации.',['Нужна вероятность принадлежности к классу','Нужна простая быстрая функция для скрытых слоёв глубокой сети','Нужен жёсткий выбор «сработал / не сработал» как в простом перцептроне'],CF,[1,2,0]),
+X('Сопоставьте формулу и название функции активации.',['f(x) = max(0; x)','f(x) = 1 при x ≥ 0, иначе 0','f(x) = 1 / (1 + e^(−x))'],CF,[2,0,1])],
+/*7*/[A(3,-2.5,6,0),A(0,-1,8.2,2),A(-5,-0.4,0.4,-2)],
+/*8*/[X('Определите задачу, которую решает нейронная сеть.',['Определение, есть ли на снимке кошка (по пикселям изображения)','Прогноз цены подержанного автомобиля по году и пробегу','Отнесение банковской операции к категории «обычная» или «подозрительная»'],CT,[2,1,0]),
+X('Определите задачу, которую решает нейронная сеть.',['Прогноз расхода топлива по массе автомобиля','Определение рукописной буквы на фотографии','Деление отзывов на положительные и отрицательные'],CT,[1,2,0]),
+X('Определите задачу, которую решает нейронная сеть.',['Поиск отпечатка пальца в базе по изображению','Предсказание оценки студента по числу часов подготовки','Определение вида растения (из трёх) по набору измерений'],CT,[2,1,0])],
+/*9*/[X('Определите область применения технологии ИИ.',['Подсчёт пассажиров на платформе по видео с камер','Определение тональности отзыва в тексте','Создание реалистичной картинки по словесному описанию','Чтение электронной книги вслух синтезированным голосом'],CA,[0,1,2,3]),
+X('Определите область применения технологии ИИ.',['Автоматическое составление краткого пересказа статьи','Создание нового логотипа по запросу','Распознавание дорожных знаков камерой беспилотника','Голосовой помощник произносит ответ'],CA,[1,2,0,3]),
+X('Определите область применения технологии ИИ.',['Чат-бот отвечает на вопросы пользователя текстом','Распознавание лица для разблокировки телефона','Создание музыкального трека по описанию настроения','Навигатор произносит маршрут голосом'],CA,[1,0,2,3])],
+/*10*/[S('Что вычисляет перцептрон перед применением активационной функции?',['Взвешенную сумму входов','Среднее арифметическое весов','Максимальный из входов','Количество входов'],0),
+S('Что определяет влияние входа на выход перцептрона?',['Вес этого входа','Номер входа','Название активационной функции','Число выходов'],0),
+S('Сколько выходов у простейшего перцептрона?',['Один','Столько же, сколько входов','Два','Не меньше трёх'],0)],
+/*11*/[P([1,0,1],[0.2,0.7,0.1],0.5),P([1,1,1],[0.3,0.2,0.4],0.8),P([0,1,1],[0.6,0.25,0.4],0.7)],
+/*12*/[X('Определите вид машинного обучения.',['Программа находит группы похожих снимков без ярлыков','Нейросеть учится определять болезнь по снимкам с диагнозами врачей','Модель в симуляторе получает штраф за столкновение и награду за безопасный проезд'],CM,[1,0,2]),
+X('Определите вид машинного обучения.',['Модель учится предсказывать оценку фильма по данным с известными оценками','Алгоритм находит в данных о покупках группы похожих покупателей','Агент учится управлять роботом-манипулятором по сигналам награды'],CM,[0,1,2]),
+X('Определите вид машинного обучения.',['Агент в видеоигре набирает очки и меняет стратегию','Модель распознаёт цифры, обучаясь на изображениях с правильными ответами','Поиск скрытых групп в наборе данных без разметки'],CM,[2,0,1])],
+/*13*/[M('Выберите все верные утверждения о видах машинного обучения.',['Для обучения с учителем нужны размеченные данные','Кластеризация — пример обучения без учителя','В обучении с подкреплением модель учится через пробы и награды','В обучении без учителя для каждого объекта задан правильный ответ'],[0,1,2]),
+M('Выберите все верные утверждения.',['Метки — это правильные ответы для обучающих примеров','Регрессия обычно решается с учителем','Обучение с подкреплением не использует награды','Обучение без учителя ищет закономерности без заданных ответов'],[0,1,3]),
+M('Выберите все верные утверждения.',['Агент — тот, кто выбирает действия в обучении с подкреплением','Классификация изображений кошек и собак — пример обучения с учителем','Обучение с учителем обходится без данных','Награда показывает агенту, насколько удачным было действие'],[0,1,3])],
+/*14*/[W([3,4,4,2]),W([5,6,3]),W([6,3,2,1])],
+/*15*/[G(0,2),G(3,-3),G(0.5,-2)],
+/*16*/[S('Какая функция активации чаще всего используется в скрытых слоях современных глубоких сетей?',['ReLU','Единичный скачок','Константа f(x) = 5','Функция, всегда равная 0'],0),
+S('Какая функция активации подходит, если выход нейрона нужно трактовать как вероятность?',['Sigmoid','ReLU','Любая линейная функция без ограничений','Функция, возвращающая только отрицательные числа'],0),
+S('Почему единичный скачок неудобен для обучения градиентными методами?',['Она разрывна, и её производная почти везде равна нулю','Она возвращает слишком большие числа','Она определена только для целых чисел','Она требует больше скрытых слоёв'],0)],
+/*17*/[Z([3,1],[0.5,-2],1),Z([2,3],[0.5,0.5],-1),Z([-1,2],[2,1],1)],
+/*18*/[X('Определите задачу, которую решает нейронная сеть.',['Предсказание стоимости акции завтра по прошлым ценам','Определение марки автомобиля на фото','Отнесение клиента к группе «вернёт кредит / не вернёт»','Оценка времени доставки заказа по расстоянию и пробкам'],CT,[1,2,0,1]),
+X('Определите задачу, которую решает нейронная сеть.',['Определение породы собаки по фотографии','Прогноз числа посетителей музея завтра','Выбор категории обращения в поддержку: оплата, доставка или возврат','Прогноз роста растения за месяц по освещению и поливу'],CT,[2,1,0,1]),
+X('Определите задачу, которую решает нейронная сеть.',['Распознавание номерного знака на изображении','Определение, будет ли завтра дождь (да/нет)','Предсказание средней температуры на завтра','Определение личности по снимку отпечатка пальца'],CT,[2,0,1,2])],
+/*19*/[X('Определите вид машинного обучения.',['Банк делит клиентов на сегменты без заранее заданных сегментов','Модель учится определять язык текста по размеченным примерам','Робот-пылесос учится находить маршрут уборки по поощрениям','Система предсказывает зарплату по таблице с известными зарплатами'],CM,[1,0,2,0]),
+X('Определите вид машинного обучения.',['Поиск аномальных операций в данных без меток','Обучение по фото с указанными названиями цветов','Программа играет в го сама с собой и получает награду за победу','Прогноз спроса по историческим данным с известными значениями'],CM,[1,0,2,0]),
+X('Определите вид машинного обучения.',['Агент учится балансировать шест, получая награду за время устойчивости','Группировка научных статей по темам без заданных тем','Фильтр обучен на письмах с пометками «спам» и «не спам»','Поиск скрытых групп товаров в данных о покупках'],CM,[2,1,0,1])],
+/*20*/[M('Выберите все примеры генеративных моделей.',['Нейросеть, пишущая стихотворение по теме','Модель, создающая видео по описанию','Алгоритм, считающий сумму в таблице','Модель, генерирующая фрагмент речи заданным голосом','Сканер штрихкодов'],[0,1,3]),
+M('Что относится к задачам генеративных моделей?',['Создание нового изображения','Создание нового текста','Определение, есть ли на фото лицо','Создание новой мелодии','Сортировка списка чисел'],[0,1,3]),
+M('Выберите верные утверждения о генеративных моделях.',['Они создают новые данные, похожие на обучающие','Они не могут работать с текстом','Примеры: генерация изображений и текста','Они только классифицируют входные данные'],[0,2])]
+];
+/* при запуске для каждого задания случайно выбирается один из вариантов (до 4) */
+const Q=Q0.map((q,i)=>{const c=[q,...V[i]],k=Math.floor(Math.random()*c.length);return Object.assign({},c[k],{p:PTS[i],v:k+1})});
+const TOTAL=Q.reduce((s,x)=>s+x.p,0);
+const $=i=>document.getElementById(i);
+const fl=v=>Math.floor(v*2+1e-9)/2;const fm=v=>String(v).replace('.',',');
+const ans=Q.map(x=>x.t=='m'?[]:x.t=='x'?x.L.map(()=>-1):x.t=='n'?x.F.map(()=>''):-1);
+let cur=0,left=45*60,tick=null,viol=[],started=false,done=false,t0=0,paused=false;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const stamp=()=>mmss(45*60-left);
+
+function render(){
+ const x=Q[cur];let h=`<p class="q">Задание ${cur+1}. ${esc(x.q)} <span class="pt">(${x.p} ${x.p==1?'балл':x.p<5?'балла':'баллов'})</span></p>`;
+ if(x.t=='s')h+=x.o.map((o,i)=>`<label class="o"><input type="radio" name="r" value="${i}" ${ans[cur]===i?'checked':''}> ${esc(o)}</label>`).join('');
+ if(x.t=='m')h+=`<p class="mu">Можно выбрать несколько вариантов.</p>`+x.o.map((o,i)=>`<label class="o"><input type="checkbox" value="${i}" ${ans[cur].includes(i)?'checked':''}> ${esc(o)}</label>`).join('');
+ if(x.t=='x')h+=x.L.map((l,i)=>`<div class="row"><span style="flex:1 1 260px">${esc(l)}</span><select data-i="${i}"><option value="-1">— выберите —</option>${x.C.map((c,j)=>`<option value="${j}" ${ans[cur][i]===j?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('');
+ if(x.t=='n')h+=x.F.map((f,i)=>`<div class="row"><span>${esc(f[0])}</span><input class="n" type="text" inputmode="decimal" data-i="${i}" value="${esc(ans[cur][i])}"></div>`).join('');
+ if(x.t=='n'&&x.h)h+=`<div class="hint"><b>Формулы-подсказки</b><br>${x.h}</div>`;if(x.t=='n')h+=calcHTML();$('qa').innerHTML=h;
+ const a=$('qa');
+ a.querySelectorAll('input[type=radio]').forEach(e=>e.onchange=()=>{ans[cur]=+e.value;nav()});
+ a.querySelectorAll('input[type=checkbox]').forEach(e=>e.onchange=()=>{const s=new Set(ans[cur]);e.checked?s.add(+e.value):s.delete(+e.value);ans[cur]=[...s];nav()});
+ a.querySelectorAll('select').forEach(e=>e.onchange=()=>{ans[cur][+e.dataset.i]=+e.value;nav()});
+ a.querySelectorAll('input.n').forEach(e=>e.oninput=()=>{ans[cur][+e.dataset.i]=e.value;nav()});
+ if(x.t=='n')bindCalc();$('pg').textContent=`Задание ${cur+1} из ${Q.length}`;
+ $('pv').style.visibility=cur?'visible':'hidden';
+ $('nx').textContent=cur==Q.length-1?'Завершить работу':'Далее';
+ nav();
+}
+function answered(i){const v=ans[i],x=Q[i];return x.t=='m'?v.length>0:x.t=='x'?v.some(k=>k>=0):x.t=='n'?v.some(k=>String(k).trim()!==''):v>=0}
+let ce='';
+function calcHTML(){const k=['7','8','9','÷','4','5','6','×','1','2','3','−','0','.','(',')','+','eˣ','^','⌫','C','='];return `<div class="calc"><b>Калькулятор</b><input id="cd" type="text" aria-label="Выражение" autocomplete="off" value="${esc(ce)}"><div class="ck">${k.map(c=>`<button type="button" data-k="${c}" class="${c=='='?'eq':''}">${c}</button>`).join('')}</div><p class="mu" style="margin:6px 0 0">Кнопка eˣ вставляет exp( ), символ ^ означает степень. Результат округляется до 6 знаков.</p></div>`}
+function ev(s){try{const t=s.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'.').replace(/\^/g,'**');if(!/^(?:[0-9+\-*\/().\s]|exp)*$/.test(t))return 'Ошибка';const r=Function('exp','"use strict";return ('+t+')')(Math.exp);return typeof r!='number'||!isFinite(r)?'Ошибка':String(Math.round(r*1e6)/1e6)}catch(e){return 'Ошибка'}}
+function bindCalc(){const d=$('cd');d.oninput=()=>{ce=d.value};d.onkeydown=e=>{if(e.key=='Enter'){ce=ev(ce);d.value=ce}};document.querySelectorAll('.ck button').forEach(b=>b.onclick=()=>{const c=b.dataset.k;if(ce=='Ошибка')ce='';if(c=='C')ce='';else if(c=='⌫')ce=ce.slice(0,-1);else if(c=='eˣ')ce+='exp(';else if(c=='=')ce=ev(ce);else ce+=c;d.value=ce})}
+function nav(){
+ $('nav').innerHTML=Q.map((_,i)=>`<button class="${answered(i)?'d':''} ${i==cur?'c':''}" data-i="${i}" aria-label="Задание ${i+1}">${i+1}</button>`).join('');
+ $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{cur=+b.dataset.i;render()});
+ $('pb').style.width=Q.filter((_,i)=>answered(i)).length/Q.length*100+'%';
+}
+function score(i){
+ const x=Q[i],v=ans[i];
+ if(x.t=='s')return v===x.a?x.p:0;
+ if(x.t=='m'){const ok=v.filter(k=>x.a.includes(k)).length,wr=v.filter(k=>!x.a.includes(k)).length,miss=x.a.length-ok;const e=wr+miss;return e==0?x.p:e==1?x.p/2:0}
+ if(x.t=='x')return fl(v.reduce((s,k,j)=>s+(k===x.a[j]?1:0),0)/x.L.length*x.p);
+ return fl(v.reduce((s,k,j)=>{const n=parseFloat(String(k).replace(',','.').replace('−','-').trim());return s+(Math.abs(n-x.F[j][1])<(x.F[j][2]||1e-6)?1:0)},0)/x.F.length*x.p);
+}
+function fmtTimer(){$('tm').textContent=mmss(left);$('tm').className=left<300?'low':''}
+function start(){
+ const n=$('nm').value.trim();if(n.length<3){$('er').textContent='Введите фамилию и имя.';return}
+ const el=document.documentElement;
+ (el.requestFullscreen?el.requestFullscreen():Promise.reject()).then(run).catch(()=>{$('er').textContent='Не удалось включить полноэкранный режим. Разрешите его в браузере и повторите попытку.'});
+}
+function run(){
+ started=true;t0=Date.now();$('s0').classList.add('hide');$('s1').classList.remove('hide');render();fmtTimer();
+ tick=setInterval(()=>{left=Math.max(0,45*60-Math.round((Date.now()-t0)/1000));fmtTimer();if(left<=0)finish('Время вышло')},1000);
+}
+function violate(why){
+ if(!started||done)return;
+ viol.push({t:stamp(),w:why});
+ if(viol.length>=3){finish('Превышено число нарушений');return}
+ $('ovt').textContent=`Нарушение ${viol.length} из 3: ${why}.`;$('ov').style.display='flex';paused=true;
+}
+document.addEventListener('fullscreenchange',()=>{if(started&&!done&&!document.fullscreenElement)violate('выход из полноэкранного режима')});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)violate('переключение вкладки или сворачивание окна')});
+window.addEventListener('blur',()=>{setTimeout(()=>{if(started&&!done&&!document.hidden&&!paused&&!document.hasFocus())violate('переход в другое окно или приложение')},150)});
+['contextmenu','copy','cut','paste','dragstart'].forEach(e=>document.addEventListener(e,ev=>{if(started&&!done)ev.preventDefault()}));
+document.addEventListener('keydown',e=>{if(!started||done)return;const k=e.key.toLowerCase();
+ if(e.key=='F12'||e.key=='F11'||(e.ctrlKey||e.metaKey)&&['c','v','x','p','s','u','a'].includes(k)||e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))e.preventDefault()});
+$('back').onclick=()=>{document.documentElement.requestFullscreen().then(()=>{$('ov').style.display='none';paused=false;window.focus()}).catch(()=>{})};
+$('go').onclick=start;
+$('pv').onclick=()=>{if(cur>0){cur--;render()}};
+function ask(){const u=Q.filter((_,i)=>!answered(i)).length;$('cu').textContent=u?`Заданий без ответа: ${u}.`:'На все задания даны ответы.';$('cf').style.display='flex'}
+$('nx').onclick=()=>{if(cur<Q.length-1){cur++;render()}else ask()};
+$('fin').onclick=ask;$('cy').onclick=()=>finish('Сдано учеником');$('cn').onclick=()=>{$('cf').style.display='none'};
+/* ===== ОТПРАВКА РЕЗУЛЬТАТА В GOOGLE-ТАБЛИЦУ (как в файле СОР_9_сети.html) ===== */
+const CONFIG={
+  SHEET_URL:'https://script.google.com/macros/s/AKfycbyLVjhSV2opCoUFZ9VV8WYCzieNyy4QR1jx21ODuHiiLCxAzb0pfxelaXJYzaJ00OVI/exec',
+  SECRET:'sor9-Kv7mQ2',
+  SHEET_TAG:'ИИ'   // листы в таблице: «11А ИИ», «11Б ИИ»…
+};
+const QKEY='sor11_ai_queue_v1',RID=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function queueAdd(r){const q=store.get(QKEY)||[];if(!q.some(x=>x.id===r.id))q.push(r);store.set(QKEY,q)}
+const URLOK=u=>/^https:\/\/script\.google\.com\/(macros|a\/macros\/[^\/]+)\/s\/[\w-]{20,}\/exec$/.test(u);
+function why(c){return ({nourl:'ссылка на таблицу не вставлена в файл',badurl:'ссылка на таблицу указана неправильно',dev:'указана тестовая ссылка (/dev), нужна /exec',access:'доступ к скрипту закрыт: в развёртывании нужно выбрать «У кого есть доступ: Все»',secret:'секретное слово в файле и в скрипте не совпадает',script:'скрипт в таблице выдал ошибку',net:'нет связи с script.google.com (интернет или школьный фильтр)'})[c]||c}
+async function postOne(r){
+  const u=CONFIG.SHEET_URL;
+  if(!u)return {st:'nourl'};if(/\/dev$/.test(u))return {st:'dev'};if(!URLOK(u))return {st:'badurl'};
+  let txt;
+  try{const res=await fetch(u,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(r),redirect:'follow'});txt=await res.text()}
+  catch(e){try{await fetch(u,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(r)});return {st:'blind'}}catch(e2){return {st:'net'}}}
+  let j=null;try{j=JSON.parse(txt)}catch(e){}
+  if(!j)return {st:/<html|accounts\.google|ServiceLogin/i.test(txt)?'access':'script'};
+  if(j.ok)return {st:'ok'};
+  return {st:j.err==='secret'?'secret':'script'};
+}
+let sending=false;
+async function sendQueue(){
+  if(sending)return;sending=true;
+  const q=store.get(QKEY)||[],left=[];let last='ok';
+  for(const r of q){const st=(await postOne(r)).st;if(st==='ok'||st==='blind'){if(st==='blind'&&last==='ok')last='blind'}else{left.push(r);last=st}}
+  store.set(QKEY,left);sending=false;
+  const b=document.getElementById('sendState');if(!b)return;
+  if(!left.length&&last==='ok')b.innerHTML='<b class="ok">✔ Результат записан в таблицу учителя.</b>';
+  else if(!left.length)b.innerHTML='Результат отправлен в таблицу (без подтверждения от сервера).';
+  else{b.innerHTML='<b class="bad">Не удалось отправить в таблицу:</b> '+why(last)+'. Результат сохранён на этом компьютере и будет отправлен при следующем открытии файла. <button class="btn o" id="rs" type="button">Повторить</button>';document.getElementById('rs').onclick=()=>{b.textContent='Отправка результата…';sendQueue()}}
+}
+function given(i){const x=Q[i],v=ans[i];
+  if(x.t=='s')return v>=0?x.o[v]:'—';
+  if(x.t=='m')return v.length?v.map(k=>x.o[k]).join('; '):'—';
+  if(x.t=='x')return x.L.map((l,j)=>l+' → '+(v[j]>=0?x.C[v[j]]:'—')).join('; ');
+  return x.F.map((f,j)=>f[0]+' = '+(String(v[j]).trim()||'_')).join('; ')}
+function buildRec(reason,sc,sum,used){
+  const fx=viol.filter(v=>v.w.indexOf('полноэкранного')>=0).length;
+  return {secret:CONFIG.SECRET,id:RID,status:reason=='Сдано учеником'?'завершена':'завершена: '+reason.toLowerCase(),
+    time:new Date().toLocaleString('ru-RU'),fio:$('nm').value.trim(),cls:$('cl').value.trim(),score:sum,max:TOTAL,tag:CONFIG.SHEET_TAG,
+    heads:Q.map((_,i)=>'Зад.'+(i+1)),pts:sc,variant:Q.map(x=>x.v).join('-'),
+    leaves:viol.length,leavesText:viol.length?viol.length+': '+viol.map(v=>v.t+' '+v.w).join(', '):'0',
+    fsExits:fx,reloads:0,duration:used,
+    answers:Q.map((x,i)=>(i+1)+') ['+(sc[i]==x.p?'+':'-')+'] '+given(i)).join('\n')}}
+window.addEventListener('load',()=>{if((store.get(QKEY)||[]).length)sendQueue()});
+function finish(reason){
+ if(done)return;done=true;clearInterval(tick);$('ov').style.display='none';$('cf').style.display='none';
+ if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+ const sc=Q.map((_,i)=>score(i)),sum=sc.reduce((a,b)=>a+b,0),pc=Math.round(sum/TOTAL*100);
+ const used=mmss(45*60-left);
+ const lines=Q.map((x,i)=>`<div class="row"><span>Задание ${i+1}</span><span class="${sc[i]==x.p?'ok':'bad'}">${fm(sc[i])} из ${x.p}</span></div>`).join('');
+ const vl=viol.length?viol.map(v=>`<div class="row"><span>${v.t}</span><span>${esc(v.w)}</span></div>`).join(''):'<p class="ok">Нарушений не зафиксировано.</p>';
+ const rep=`СОР, 1 четверть, Информатика и ИИ, 11 класс\nУченик: ${$('nm').value.trim()} ${$('cl').value.trim()}\nБаллы: ${fm(sum)} из ${TOTAL} (${pc}%)\nЗадания: ${sc.map(fm).join(', ')}\nВарианты: ${Q.map(x=>x.v).join('-')}\nЗатрачено: ${used}\nНарушения: ${viol.length?viol.map(v=>v.t+' '+v.w).join('; '):'нет'}\nЗавершение: ${reason}`;
+ $('s1').classList.add('hide');$('s2').classList.remove('hide');
+ $('s2').innerHTML=`<h1>Работа завершена</h1><p class="mu">${esc(reason)} · затрачено ${used}</p>
+ <div class="card"><p style="font-size:2rem;margin:0"><b>${fm(sum)} из ${TOTAL}</b> <span class="mu">баллов, ${pc}%</span></p><p class="mu">${esc($('nm').value.trim())}, ${esc($('cl').value.trim())}</p></div>
+ <div class="card"><b>Баллы по заданиям</b>${lines}</div>
+ <div class="card"><b>Протокол нарушений</b>${vl}</div>
+ <div class="card" id="sendState">Отправка результата…</div><p><button class="btn" id="cp">Скопировать результат для учителя</button> <span id="cm" class="mu"></span></p>`;
+ $('cp').onclick=()=>{const ta=document.createElement('textarea');ta.value=rep;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();$('cm').textContent=ok?'Скопировано':'Скопируйте вручную: '+rep};
+ queueAdd(buildRec(reason,sc,sum,used));sendQueue();
+}
+</script></body></html>
