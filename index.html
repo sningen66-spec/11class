@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Практикум по теории графов</title>
+<style>
+:root{--bg:#edf1f6;--ink:#1b2a41;--mut:#5b6b82;--pri:#2457d6;--ok:#1f8a5b;--bad:#cf3b34;--line:#c3cfdd}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font:16px/1.5 "Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg) linear-gradient(#dde5ef 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,#dde5ef 1px,transparent 1px) 0 0/28px 28px;user-select:none;-webkit-user-select:none}
+header{display:flex;gap:18px;align-items:center;padding:10px 20px;background:var(--ink);color:#fff;position:sticky;top:0;z-index:5}
+header b{flex:1}header .v{color:#ffb4ae}
+main{max-width:860px;margin:22px auto;padding:0 16px}
+.card{background:#fff;border:1.5px solid var(--ink);border-radius:6px;padding:22px;box-shadow:5px 5px 0 var(--ink)}
+h1,h2{margin:0 0 8px;font-family:Georgia,"Times New Roman",serif}
+.mut{color:var(--mut)}
+input[type=text],select{font:inherit;padding:8px 10px;border:1.5px solid var(--ink);border-radius:4px;background:#fff;color:var(--ink);user-select:text;-webkit-user-select:text}
+button{font:inherit;font-weight:600;padding:9px 18px;border:1.5px solid var(--ink);border-radius:4px;background:var(--pri);color:#fff;cursor:pointer}
+button.s{background:#fff;color:var(--ink)}button.on{background:var(--ink);color:#fff}button:disabled{opacity:.45;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+svg.g{width:100%;height:auto;max-height:340px;background:#fbfcfe;border:1.5px solid var(--line);border-radius:4px;touch-action:manipulation}
+.ed{stroke:var(--ink);stroke-width:2.5}.ed.rm{stroke:#b9c3d1;stroke-dasharray:6 6}.hit{stroke:transparent;stroke-width:16;cursor:pointer}
+.nd{cursor:pointer}.nd circle{fill:#fff;stroke:var(--ink);stroke-width:2.5}.nd.sel circle{fill:#ffd166}
+.nd text{text-anchor:middle;font:600 14px Arial;fill:var(--ink);pointer-events:none}
+table.m{border-collapse:collapse}.m td,.m th{width:46px;height:42px;text-align:center;border:1px solid var(--line)}
+.m input{width:38px;text-align:center;padding:5px 0}
+.fb{margin:12px 0;padding:10px 14px;border-left:5px solid var(--pri);background:#eef3ff}.fb.ok{border-color:var(--ok);background:#e8f6ef}.fb.bad{border-color:var(--bad);background:#fdeeed}
+.dots{display:flex;gap:5px}.dots i{width:12px;height:12px;border:1.5px solid #fff;border-radius:50%}.dots i.d{background:#fff}.dots i.c{background:#ffd166;border-color:#ffd166}
+#lock{position:fixed;inset:0;z-index:99;background:rgba(27,42,65,.97);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+#lock[hidden],[hidden]{display:none!important}
+.two{display:flex;gap:20px;flex-wrap:wrap}.two>*{flex:1 1 300px}
+td.l{text-align:left}
+</style></head><body>
+<header id="hd" hidden><b>Практикум по теории графов</b><span class="dots" id="pg"></span><span id="tm">0:00</span><span class="v" id="vl"></span></header>
+<main id="app"></main>
+<div id="lock" hidden><h1>Работа приостановлена</h1><p>Вы вышли из полноэкранного режима или покинули страницу.<br>Это зафиксировано и будет показано учителю.</p><button id="back">Вернуться к работе</button></div>
+
+<script>
+/* ===== НАСТРОЙКА УЧИТЕЛЯ ===== */
+const CFG={URL:'https://script.google.com/macros/s/AKfycbxpAB_b0Gonalrv1IDXaweezjOKhdE6fpUbora6FqLFbQcZdbqRwMDlLjm3KvKVeupFOg/exec',            // адрес веб-приложения Google Apps Script (оканчивается на /exec)
+           KEY:'graph2026'};  // тот же ключ, что в скрипте Apps Script
+/* ============================== */
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg',R=22;
+const S={on:false,done:false,m:0,res:[],log:[],ep:null,bl:false,lock:false,t0:0,mt:0};
+const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+
+/* ---------- контроль честности ---------- */
+function L(type,x){S.log.push(Object.assign({t:new Date().toISOString(),mission:S.m+1,type},x));upd()}
+const away=()=>document.hidden||S.bl||!document.fullscreenElement;
+function chk(why){
+  if(!S.on||S.done)return;
+  if(away()){if(!S.ep){S.ep={s:Date.now(),r:new Set()};$('#lock').hidden=false}if(why)S.ep.r.add(why)}
+  else if(S.ep){L('leave',{sec:Math.round((Date.now()-S.ep.s)/1000),why:[...S.ep.r].join('; ')});S.ep=null;$('#lock').hidden=true}
+  upd()}
+addEventListener('blur',()=>{S.bl=true;chk('окно потеряло фокус (другое окно/программа)')});
+addEventListener('focus',()=>{S.bl=false;chk()});
+document.addEventListener('visibilitychange',()=>chk(document.hidden?'переход на другую вкладку':''));
+document.addEventListener('fullscreenchange',()=>chk(document.fullscreenElement?'':'выход из полноэкранного режима'));
+document.addEventListener('mouseleave',()=>{if(S.on&&!S.ep)L('cursor',{note:'курсор покинул окно'})});
+['copy','cut','paste','contextmenu','dragstart'].forEach(t=>document.addEventListener(t,e=>{if(S.on){e.preventDefault();L('blocked',{note:t})}}));
+document.addEventListener('keydown',e=>{if(!S.on)return;const k=e.key,c=e.ctrlKey||e.metaKey;
+  if(k==='F12'||k==='PrintScreen'||k==='Meta'||(c&&e.shiftKey&&/[ijcIJC]/.test(k))||(c&&/^[cvxpsuafCVXPSUAF]$/.test(k))){e.preventDefault();L('key',{note:(c?'Ctrl+':'')+k})}});
+addEventListener('beforeunload',e=>{if(S.on&&!S.done){e.preventDefault();e.returnValue=''}});
+$('#back').onclick=()=>document.documentElement.requestFullscreen().catch(()=>{});
+function upd(){const n=S.log.filter(x=>x.type==='leave').length;$('#vl').textContent=n?'Выходов: '+n:'';
+  $('#pg').innerHTML=[0,1,2,3,4,5].map(i=>`<i class="${i<S.m?'d':i==S.m?'c':''}"></i>`).join('')}
+setInterval(()=>{if(S.on&&!S.done)$('#tm').textContent=fmt(Math.round((Date.now()-S.t0)/1000))},1000);
+
+/* ---------- графика ---------- */
+const ring=(n,cx,cy,r,T)=>T.map((t,i)=>[cx+r*Math.cos(-Math.PI/2+2*Math.PI*i/n),cy+r*Math.sin(-Math.PI/2+2*Math.PI*i/n),t]);
+const deg=(n,E)=>E.filter(e=>e[0]==n||e[1]==n).length;
+function bfs(n,E,s){const d=Array(n).fill(Infinity);d[s]=0;const q=[s];while(q.length){const u=q.shift();E.forEach(([a,b])=>{const v=a==u?b:b==u?a:-1;if(v>=0&&d[v]==Infinity){d[v]=d[u]+1;q.push(v)}})}return d}
+function draw(N,E,o={}){
+  let s=`<svg class="g" data-g="${o.id||''}" viewBox="0 0 ${o.w||640} ${o.h||320}"><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5 0 10z" fill="#1b2a41"/></marker></defs>`;
+  E.forEach(([a,b,d],i)=>{const[x1,y1]=N[a],[x2,y2]=N[b],l=Math.hypot(x2-x1,y2-y1)||1,k=d?R+4:0,
+    p=`x1="${x1}" y1="${y1}" x2="${x2-(x2-x1)/l*k}" y2="${y2-(y2-y1)/l*k}"`;
+    s+=`<g data-e="${i}"><line class="hit" ${p}/><line class="ed${o.rem&&o.rem.has(i)?' rm':''}" ${p}${d?' marker-end="url(#ar)"':''}/></g>`});
+  N.forEach(([x,y,t],i)=>s+=`<g data-n="${i}" class="nd${o.sel&&o.sel.has(i)?' sel':''}"><circle cx="${x}" cy="${y}" r="${R}"/><text x="${x}" y="${y}" dy=".35em">${t}</text></g>`);
+  return s+'</svg>'}
+
+/* ---------- миссии ---------- */
+const LT='АБВГДЕЖ';let st={};
+const M=[
+{t:'Миссия 1. Радар связей',d:'Перед вами схема серверов. Отметьте щелчком все серверы, степень которых равна 3, и нажмите «Проверить». Ошибочный выбор снижает баллы.',
+ N:[[80,70,'S1'],[230,45,'S2'],[380,95,'S3'],[90,250,'S4'],[250,175,'S5'],[470,230,'S6'],[300,290,'S7'],[570,120,'S8']],
+ E:[[0,1],[0,2],[0,3],[1,2],[1,4],[2,5],[3,4],[3,6],[4,5],[5,7],[6,7],[2,4]],
+ init(){st={sel:new Set()}},view(){return draw(this.N,this.E,{sel:st.sel})},
+ on(t,i){if(t=='n'){st.sel.has(i)?st.sel.delete(i):st.sel.add(i);rd()}},
+ check(){const T=this.N.map((_,i)=>i).filter(i=>deg(i,this.E)==3),r=[...st.sel].filter(i=>T.includes(i)).length,w=st.sel.size-r;
+  return{s:Math.max(0,r-w)/T.length,m:`Верно отмечено: ${r} из ${T.length}. Лишних отметок: ${w}.`,x:{target:T.length,right:r,wrong:w}}}},
+{t:'Миссия 2. Аналитик транзакций',d:'На графе показаны денежные переводы (стрелка идёт от отправителя к получателю). Определите, кто получил больше всего переводов и кто больше всех отправил.',
+ N:ring(5,320,165,115,['Айдар','Бека','Вера','Гуля','Дина']).map(p=>{p[3]=p[2];return p}),
+ E:[[0,1,1],[0,2,1],[0,3,1],[1,2,1],[3,2,1],[2,4,1],[4,0,1],[3,4,1]],
+ init(){st={}},view(){const o=['<option value="">— выберите —</option>'].concat(['Айдар','Бека','Вера','Гуля','Дина'].map((n,i)=>`<option value="${i}">${n}</option>`)).join('');
+  return draw(this.N.map(p=>[p[0],p[1],p[2].slice(0,4)]),this.E,{})+`<div class="row"><label>Больше всех получил (макс. in-degree): <select id="a1">${o}</select></label><label>Больше всех отправил (макс. out-degree): <select id="a2">${o}</select></label></div>`},
+ on(){},
+ check(){const inn=i=>this.E.filter(e=>e[1]==i).length,out=i=>this.E.filter(e=>e[0]==i).length,ix=[0,1,2,3,4],
+  mi=ix.reduce((a,b)=>inn(b)>inn(a)?b:a),mo=ix.reduce((a,b)=>out(b)>out(a)?b:a),a1=$('#a1').value,a2=$('#a2').value,r1=a1==mi,r2=a2==mo;
+  return{s:(r1+r2)/2,m:`Получатель: ${r1?'верно':'неверно'}. Отправитель: ${r2?'верно':'неверно'}.`,x:{a1,a2}}}},
+{t:'Миссия 3. Обрыв связи',d:'На кольцевой схеме дорог возникла пробка. Найдите цикл и щёлкните по одному ребру, чтобы удалить его: граф должен стать деревом (без циклов), но остаться связным. Повторный щелчок возвращает ребро.',
+ init(){const c=ring(5,320,175,95,[1,2,3,4,5]),f=(i,k)=>[320+(c[i][0]-320)*k,175+(c[i][1]-175)*k];
+  this.N=c.concat([f(1,1.85).concat(6),f(3,1.85).concat(7)]);this.E=[[0,1],[1,2],[2,3],[3,4],[4,0],[1,5],[3,6]];st={rem:new Set()}},
+ view(){return draw(this.N,this.E,{rem:st.rem})},
+ on(t,i){if(t=='e'){st.rem.has(i)?st.rem.delete(i):st.rem.add(i);rd()}},
+ check(){const E=this.E.filter((_,i)=>!st.rem.has(i)),con=bfs(7,E,0).every(isFinite),tree=E.length==6;
+  return{s:con&&tree?1:0,m:con&&tree?'Граф стал деревом и остался связным.':!con?'Граф распался: до некоторых точек не доехать. Вы удалили ребро, не лежащее на цикле.':'В графе остался цикл (рёбер должно быть на 1 меньше, чем вершин).',x:{removed:[...st.rem]}}}},
+{t:'Миссия 4. Логист Семея',d:'Склад А имеет двустороннюю связь со складами Б и В. Из В идёт односторонняя дорога (дуга) в Г. Склады Г и Д связаны двусторонней дорогой. Из Д односторонняя дорога ведёт в А.<br><span class="mut">Щёлкните по пустому месту — появится следующая вершина (А, Б, В, Г, Д). Выберите «Ребро» или «Дугу» и щёлкните по двум вершинам по очереди (для дуги — сначала откуда, потом куда). Щелчок по линии удаляет её.</span>',
+ init(){st={N:[],E:[],mode:0,p:null}},
+ view(){return `<div class="row"><button class="${st.mode?'s':'on'}" data-md="0">Ребро</button><button class="${st.mode?'on':'s'}" data-md="1">Дуга</button><button class="s" data-md="x">Очистить</button></div>`+draw(st.N,st.E,{sel:new Set(st.p===null?[]:[st.p])})},
+ on(t,i,g,ev){if(t=='b'){if(st.N.length>=5)return;const sv=ev.target.closest('svg'),pt=sv.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const q=pt.matrixTransform(sv.getScreenCTM().inverse());st.N.push([q.x,q.y,LT[st.N.length]])}
+  else if(t=='e')st.E.splice(i,1);
+  else if(st.p===null)st.p=i;else{if(st.p!=i&&!st.E.some(e=>e[2]==st.mode&&(st.mode?e[0]==st.p&&e[1]==i:(e[0]==st.p&&e[1]==i)||(e[0]==i&&e[1]==st.p))))st.E.push([st.p,i,st.mode]);st.p=null}
+  rd()},
+ check(){const ex=[[0,1,0],[0,2,0],[3,4,0],[2,3,1],[4,0,1]],has=(e,x)=>e[2]==x[2]&&(x[2]?e[0]==x[0]&&e[1]==x[1]:(e[0]==x[0]&&e[1]==x[1])||(e[0]==x[1]&&e[1]==x[0])),
+  r=ex.filter(x=>st.E.some(e=>has(e,x))).length,w=st.E.filter(e=>!ex.some(x=>has(e,x))).length,ok=st.N.length==5?1:0;
+  return{s:ok?Math.max(0,r-w)/5:0,m:ok?`Верных связей: ${r} из 5, лишних или неверного типа: ${w}.`:'Нужно расставить все 5 вершин (А–Д).',x:{vertices:st.N.length,right:r,wrong:w}}}},
+{t:'Миссия 5. Матрица смежности',d:'Заполните матрицу смежности для графа дорог: 1 — если между вершинами есть ребро, иначе 0. Обратите внимание, как расположены числа относительно главной диагонали.',
+ N:ring(5,170,165,105,[...'АБВГД']).map(p=>[p[0]*.8+30,p[1],p[2]]),E:[[0,1],[0,2],[1,2],[2,3],[3,4]],
+ init(){st={}},view(){let h='<table class="m"><tr><th></th>'+[...'АБВГД'].map(c=>`<th>${c}</th>`).join('')+'</tr>';
+  for(let i=0;i<5;i++){h+=`<tr><th>${LT[i]}</th>`+[0,1,2,3,4].map(j=>`<td><input type="text" inputmode="numeric" maxlength="1" data-c="${i}${j}" autocomplete="off"></td>`).join('')+'</tr>'}
+  return `<div class="two"><div>${draw(this.N,this.E,{w:400,h:320})}</div><div>${h}</table></div></div>`},
+ on(){},
+ check(){let r=0,sym=true;const v=(i,j)=>$(`[data-c="${i}${j}"]`).value.trim();
+  for(let i=0;i<5;i++)for(let j=0;j<5;j++){const e=this.E.some(x=>(x[0]==i&&x[1]==j)||(x[0]==j&&x[1]==i))?'1':'0';if(v(i,j)==e)r++;if(v(i,j)!=v(j,i))sym=false}
+  return{s:r/25,m:`Верных ячеек: ${r} из 25. Ваша матрица ${sym?'симметрична':'не симметрична'} относительно главной диагонали (для неориентированного графа она должна быть симметричной).`,x:{right:r,symmetric:sym}}}},
+{t:'Миссия 6. Детектив связей',d:'<b>Задание 1.</b> Щёлкая по парам вершин, соедините 5 вершин так, чтобы степень каждой была равна 3 (повторный щелчок по ребру — удаление). Сделайте вывод.<br><b>Задание 2.</b> Найдите кратчайший путь от А до Ж и запишите его буквами (например, А-В-Д-Е) и длину в рёбрах.',
+ N1:ring(5,320,135,100,[1,2,3,4,5]),
+ N2:[[50,130,'А'],[160,50,'Б'],[160,210,'В'],[290,60,'Г'],[300,210,'Д'],[430,110,'Е'],[570,130,'Ж']],
+ E2:[[0,1],[0,2],[1,3],[2,4],[3,5],[4,5],[4,6],[5,6],[2,3]],
+ init(){st={E:[],p:null,att:0}},
+ view(){const d=[0,1,2,3,4].map(i=>`${i+1}: ${deg(i,st.E)}`).join(' &nbsp; ');
+  return draw(this.N1,st.E,{id:'a',h:270,sel:new Set(st.p===null?[]:[st.p])})+`<p>Степени вершин → ${d}</p><div class="row"><b>Вывод:</b><label><input type="radio" name="q" value="ok"> можно построить</label><label><input type="radio" name="q" value="odd"> нельзя: сумма степеней нечётна</label><label><input type="radio" name="q" value="con"> нельзя: граф будет несвязным</label></div>`+
+  draw(this.N2,this.E2,{id:'b',h:260})+`<div class="row"><label>Путь: <input type="text" id="pp" placeholder="А-В-Д-Е" autocomplete="off"></label><label>Длина: <input type="text" id="pl" size="3" autocomplete="off"></label></div>`},
+ on(t,i,g){if(g!='a')return;if(t=='e')st.E.splice(i,1);else if(t=='n'){if(st.p===null)st.p=i;else{if(st.p!=i&&!st.E.some(e=>(e[0]==st.p&&e[1]==i)||(e[0]==i&&e[1]==st.p)))st.E.push([st.p,i]);st.p=null}}
+  const q=($('input[name=q]:checked')||{}).value,a=$('#pp').value,b=$('#pl').value;rd();if(q)document.querySelector(`input[value=${q}]`).checked=true;$('#pp').value=a;$('#pl').value=b},
+ check(){const q=($('input[name=q]:checked')||{}).value,lat={A:'А',B:'В',E:'Е',K:'К',C:'С'},
+  P=$('#pp').value.toUpperCase().split(/[^A-ZА-Я]+/).filter(Boolean).map(x=>(lat[x]||x)),idx=P.map(x=>LT.indexOf(x)),dist=bfs(7,this.E2,0)[6],
+  valid=idx.length>1&&idx[0]==0&&idx[idx.length-1]==6&&idx.every(i=>i>=0)&&idx.slice(1).every((v,k)=>this.E2.some(e=>(e[0]==idx[k]&&e[1]==v)||(e[1]==idx[k]&&e[0]==v))),
+  pOk=valid&&idx.length-1==dist,lOk=+$('#pl').value==dist;
+  return{s:(q=='odd'?.4:0)+(pOk?.4:0)+(lOk?.2:0),m:`Вывод: ${q=='odd'?'верно (сумма степеней 5·3=15 нечётна, она всегда чётна)':'неверно'}. Путь: ${pOk?'верно, он кратчайший':valid?'путь существует, но не кратчайший':'не является путём от А до Ж'}. Длина: ${lOk?'верно':'неверно'}.`,x:{answer:q,path:P.join('-'),len:$('#pl').value,edgesBuilt:st.E.length}}}}
+];
+
+/* ---------- ход работы ---------- */
+function rd(){$('#st').innerHTML=M[S.m].view()}
+function show(){const m=M[S.m];S.lock=false;S.mt=Date.now();if(m.init)m.init();upd();
+  $('#app').innerHTML=`<div class="card"><h2>${m.t}</h2><p>${m.d}</p><div id="st"></div><div id="fb"></div><div class="row"><button id="ck">Проверить</button><button id="nx" hidden>${S.m==5?'Завершить':'Дальше'}</button></div></div>`;rd();
+  $('#st').addEventListener('click',e=>{if(S.lock)return;const md=e.target.closest('[data-md]');
+    if(md){const v=md.dataset.md;if(v=='x'){st.N=[];st.E=[];st.p=null}else{st.mode=+v;st.p=null}rd();return}
+    const n=e.target.closest('[data-n]'),g=e.target.closest('[data-e]'),sv=e.target.closest('svg.g');if(!sv)return;
+    const ev=n?['n',+n.dataset.n]:g?['e',+g.dataset.e]:['b',0];m.on&&m.on(ev[0],ev[1],sv.dataset.g,e)});
+  $('#ck').onclick=()=>{const r=m.check();S.lock=true;$('#ck').hidden=true;$('#nx').hidden=false;
+    S.res.push({mission:m.t,score:+r.s.toFixed(2),sec:Math.round((Date.now()-S.mt)/1000),info:r.x});
+    $('#fb').innerHTML=`<div class="fb ${r.s>=.99?'ok':r.s<.5?'bad':''}"><b>Результат: ${Math.round(r.s*100)}%.</b> ${r.m}</div>`};
+  $('#nx').onclick=()=>{S.m++;S.m<6?show():finish()}}
+function start(){const n=$('#nm').value.trim(),c=$('#cl').value.trim();if(!n||!c){$('#er').textContent='Введите фамилию, имя и класс.';return}
+  S.name=n;S.cls=c;const p=document.documentElement.requestFullscreen?document.documentElement.requestFullscreen():Promise.reject();
+  p.then(()=>{S.on=true;S.t0=Date.now();$('#hd').hidden=false;show()}).catch(()=>{$('#er').textContent='Браузер не разрешил полноэкранный режим. Откройте файл в Chrome, Edge или Firefox и повторите.'})}
+function pay(){const tot=S.res.reduce((a,r)=>a+r.score,0),lv=S.log.filter(x=>x.type=='leave');
+  return{key:CFG.KEY,name:S.name,cls:S.cls,start:new Date(S.t0).toISOString(),end:new Date().toISOString(),totalSec:Math.round((Date.now()-S.t0)/1000),
+   score:+tot.toFixed(2),max:6,percent:Math.round(tot/6*100),leaves:lv.length,awaySec:lv.reduce((a,x)=>a+x.sec,0),missions:S.res,log:S.log,ua:navigator.userAgent,screen:screen.width+'x'+screen.height}}
+let last=null;
+async function send(){const b=JSON.stringify(last),o=$('#sn');if(!CFG.URL){o.textContent='Адрес Google Диска не настроен в файле. Скачайте результат и отдайте учителю.';return}
+  o.textContent='Отправка результата…';
+  try{const j=await(await fetch(CFG.URL,{method:'POST',body:b})).json();o.textContent=j.ok?'✓ Результат сохранён у учителя.':'Сервер отклонил запись. Скачайте файл результата и отдайте учителю.'}
+  catch(e){try{await fetch(CFG.URL,{method:'POST',mode:'no-cors',body:b});o.textContent='Результат отправлен (подтверждение не получено). Для надёжности скачайте копию.'}catch(e2){o.textContent='Нет связи. Нажмите «Отправить снова» или скачайте результат.'}}}
+function finish(){S.done=true;S.on=false;$('#lock').hidden=true;if(document.fullscreenElement)document.exitFullscreen();last=pay();
+  $('#app').innerHTML=`<div class="card"><h1>Работа завершена</h1><p><b>${last.score} из 6 баллов (${last.percent}%)</b>. Время: ${fmt(last.totalSec)}.<br>Выходов из полноэкранного режима или со страницы: <b>${last.leaves}</b> (всего ${last.awaySec} с вне окна).</p>
+  <table class="m" style="width:100%">${S.res.map(r=>`<tr><td class="l" style="width:auto;padding:4px 10px">${r.mission}</td><td style="width:70px">${Math.round(r.score*100)}%</td></tr>`).join('')}</table>
+  <div class="row"><button id="rs" class="s">Отправить снова</button><button id="dl" class="s">Скачать результат</button></div><p id="sn" class="mut"></p></div>`;
+  $('#rs').onclick=send;$('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(last,null,1)],{type:'application/json'}));a.download=`graph_${S.name.replace(/\s+/g,'_')}.json`;a.click()};
+  try{localStorage.setItem('graph_last',JSON.stringify(last))}catch(e){}send()}
+$('#app').innerHTML=`<div class="card"><h1>Практикум по основным понятиям теории графов</h1><p>6 миссий: анализ графов, построение по условию, матрица смежности и логические задачи. Каждую миссию можно проверить один раз.</p>
+<div class="fb"><b>Правила.</b> Работа проходит на весь экран. Переход на другую вкладку или в другое окно, выход из полноэкранного режима (Esc), копирование и вставка фиксируются и передаются учителю вместе с результатом.</div>
+<div class="row"><input type="text" id="nm" placeholder="Фамилия и имя" size="26" autocomplete="off"><input type="text" id="cl" placeholder="Класс" size="6" autocomplete="off"><button id="go">Начать работу</button></div><p id="er" style="color:var(--bad)"></p></div>`;
+$('#go').onclick=start;
+</script></body></html>
