@@ -1,0 +1,144 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Тренажёр: условие Фано (задание 4, ЕГЭ)</title>
+<style>
+:root{color-scheme:light dark;--bg:#f6f6f3;--c:#fff;--t:#1c1c1a;--m:#6a6a64;--a:#2f5fd0;--ok:#17803f;--no:#c0392b;--b:#dadad3}
+@media(prefers-color-scheme:dark){:root{--bg:#161616;--c:#222;--t:#eee;--m:#a2a29b;--a:#8aa9ff;--ok:#4cc27f;--no:#ff7b6b;--b:#3a3a36}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:17px/1.55 system-ui,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:14px}h1{font-size:1.35rem;margin:.3em 0}h2{font-size:1.15rem;margin:.2em 0 .5em}
+.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:14px 16px;margin:12px 0}
+button{font:inherit;background:var(--a);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;margin:2px 0}
+button.g{background:transparent;color:var(--a);border:1px solid var(--a)}button:disabled{opacity:.4;cursor:default}
+input{font:inherit;padding:8px 10px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);max-width:100%}
+nav{display:flex;gap:6px;flex-wrap:wrap}.q{white-space:pre-wrap}.m{color:var(--m)}.ok{color:var(--ok)}.no{color:var(--no)}
+pre,.ex{white-space:pre-wrap;font:15px/1.5 ui-monospace,Consolas,monospace;background:var(--bg);padding:8px 10px;border-radius:8px}
+.bar{height:6px;background:var(--b);border-radius:4px}.bar i{display:block;height:100%;background:var(--a);border-radius:4px}
+canvas{display:block;max-width:100%;border:1px dashed var(--b);border-radius:8px;margin:8px 0}
+svg{max-width:100%}svg line{stroke:currentColor;stroke-width:1.5}svg text{fill:currentColor;font:14px sans-serif}
+svg .lf{fill:var(--a);opacity:.25;stroke:var(--a)}svg .fr{fill:none;stroke:var(--m);stroke-dasharray:3}
+</style></head><body><main><div id="app"></div></main>
+<script>
+// ===== НАСТРОЙКИ УЧИТЕЛЯ =====
+const CFG={url:"https://script.google.com/macros/s/AKfycbxRpvtLOdqFLKu025q_ysIXTvMSoebvS_21itEmJoEAbmdImRzOwt0qy_KGjkpqWLHI/exec",            // адрес веб-приложения Google Apps Script (см. инструкцию)
+ controlCode:""};             // код допуска к контрольной (пусто = без кода)
+// ==============================
+const $=s=>document.querySelector(s),A=$('#app'),T={},RU="АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯ".split('');
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])),norm=s=>String(s).trim().toUpperCase().replace(/[\s.,;]/g,'');
+const H=s=>{let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0};
+const RNG=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const ri=(r,a,b)=>a+Math.floor(r()*(b-a+1)),shuf=(r,x)=>{x=[...x];for(let i=x.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x};
+const today=()=>new Date().toISOString().slice(0,10);
+let U=JSON.parse(localStorage.getItem('u')||'{"n":"","c":""}'),LAST=null,C=null;
+
+// ---------- ядро: коды Фано ----------
+function genCode(r,k){let L,ok;do{L=[''];while(L.length<k){const w=L.splice(Math.floor(r()*L.length),1)[0];L.push(w+'0',w+'1')}}while(Math.max(...L.map(x=>x.length))>5);return L}
+function mkCode(r,k){const L=shuf(r,RU).slice(0,k).sort((a,b)=>RU.indexOf(a)-RU.indexOf(b)),W=shuf(r,genCode(r,k)),M={};L.forEach((l,i)=>M[l]=W[i]);return[L,M]}
+function slots(K){const o=[];(function f(p){if(K.some(w=>p===w||p.startsWith(w)))return;if(!K.some(w=>w.startsWith(p))){o.push(p.length);return}f(p+'0');f(p+'1')})('');return o}
+function best(S,ws){const n=ws.length;if(S.length>=n){const d=[...S].sort((a,b)=>a-b).slice(0,n);return{cost:d.reduce((s,x,i)=>s+x*ws[i],0),d}}
+ let b=null;for(const x of new Set(S)){const Tt=[...S];Tt.splice(Tt.indexOf(x),1,x+1,x+1);const c=best(Tt,ws);if(c&&(!b||c.cost<b.cost))b=c}return b}
+function shortWord(K,m,mode){for(let l=1;l<=8;l++){const c=[];for(let v=0;v<2**l;v++){const w=v.toString(2).padStart(l,'0');if(K.some(k=>k.startsWith(w)||w.startsWith(k)))continue;if(m&&!slots([...K,w]).length)continue;c.push(w)}if(c.length)return{w:mode=='max'?c[c.length-1]:c[0],len:l,c}}}
+function fanoBad(M){const e=Object.entries(M);for(const[a,x]of e)for(const[b,y]of e)if(a!=b&&y.startsWith(x))return[a,x,b,y];return null}
+function explShort(K,Kn,m,S,mode){let o='';for(let l=1;l<=S.len;l++){const rows=[];for(let v=0;v<2**l;v++){const w=v.toString(2).padStart(l,'0'),e=Kn.find(x=>x[0]===w),p=Kn.find(x=>x[0].startsWith(w)&&x[0]!==w),q=Kn.find(x=>w.startsWith(x[0])&&x[0]!==w);let y;
+ if(e)y='занято буквой '+e[1];else if(p)y='это начало кода '+p[0]+' (буква '+p[1]+')';else if(q)y='начинается с кода '+q[0]+' (буква '+q[1]+')';else if(m&&!slots([...K,w]).length)y='займёт последнее свободное место — для второй неизвестной буквы кода не останется';else y='подходит ✓';rows.push(w+' — '+y)}
+ o+='Длина '+l+':\n'+(l>=4?rows.filter(x=>x.endsWith('✓')):rows).join('\n')+'\n'}
+ return o+'Подходящих слов кратчайшей длины: '+S.c.join(', ')+'. Берём '+(mode=='max'?'наибольшее':'наименьшее')+' → '+S.w}
+
+// ---------- генератор заданий ----------
+const BANK=["КОЛОБОК","БАРАБАН","ВВЕДЕНИЕ","БАЛАЛАЙКА","АБСЦИССА","ВОДОВОРОТ","КАСАТКА","ТЕЛЕФОН","КАТАРАКТА","МОЛОКОСОС","ПЕРЕКРЕСТОК","ГРАММАТИКА"];
+const HINT={fano:"Для каждого слова проверьте: не является ли оно началом другого слова набора.",decode:"Читайте цепочку слева направо и отрезайте первое подходящее кодовое слово. Из-за условия Фано оно только одно.",enc:"Сложите длины кодовых слов всех букв слова — повторяющиеся буквы считаются каждый раз.",short:"Перебирайте слова по длине (1, 2, 3…) и по возрастанию числа. Вычёркивайте занятые, начала чужих кодов и слова, начинающиеся с чужого кода.",sumlen:"Нарисуйте дерево кодов, найдите свободные ветки. Если веток меньше, чем букв — разделите самую короткую ветку на две.",msg:"Посчитайте, сколько раз встречается каждая неизвестная буква. Частым буквам — самые короткие свободные места. Иногда выгодно разделить свободную ветку, чтобы освободить короткое место."};
+const SEC={fano:100,decode:120,enc:90,short:150,sumlen:180,msg:240};
+const lst=(L,M)=>L.map(l=>l+' — '+M[l]).join(', ');
+function mk(r,kind){for(let z=0;z<30;z++){const t=mk1(r,kind);if(t)return t}}
+function mk1(r,kind){let txt,ans,expl,k,L,M;const head='По каналу связи передаются сообщения, содержащие только буквы';
+ if(kind=='fano'){k=ri(r,4,5);const Ls=shuf(r,RU).slice(0,k).sort((a,b)=>RU.indexOf(a)-RU.indexOf(b)),mkM=w=>{const m={};Ls.forEach((l,i)=>m[l]=w[i]);return m},good=mkM(shuf(r,genCode(r,k))),opts=[good];
+  for(let g=0;g<40&&opts.length<4;g++){const m=mkM(shuf(r,genCode(r,k))),i=ri(r,0,k-1);let j=ri(r,0,k-1);if(i==j)continue;m[Ls[i]]=m[Ls[j]]+(r()<.5?'0':'1');if(m[Ls[i]].length>5||!fanoBad(m))continue;if(!opts.some(o=>JSON.stringify(o)==JSON.stringify(m)))opts.push(m)}
+  if(opts.length<4)return;const o=shuf(r,opts);ans=String(o.indexOf(good)+1);
+  txt='Для букв '+Ls.join(', ')+' выбирают двоичный код. Какой из наборов кодовых слов удовлетворяет условию Фано?\n'+o.map((m,i)=>(i+1)+') '+Ls.map(l=>m[l]).join(', ')).join('\n')+'\nВ ответе запишите номер набора.';
+  expl=o.map((m,i)=>{const b=fanoBad(m);return(i+1)+') '+(b?'нарушено: код '+b[1]+' ('+b[0]+') — начало кода '+b[3]+' ('+b[2]+')':'условие Фано выполнено ✓')}).join('\n')}
+ else if(kind=='decode'||kind=='enc'){k=ri(r,4,5);[L,M]=mkCode(r,k);const w=Array.from({length:ri(r,4,5)},()=>L[ri(r,0,k-1)]),bits=w.map(l=>M[l]).join('');
+  if(kind=='decode'){txt='Для букв используется код (условие Фано выполняется):\n'+lst(L,M)+'\nРаскодируйте сообщение '+bits+'. В ответе запишите слово заглавными буквами.';ans=w.join('');
+   const inv={};L.forEach(l=>inv[M[l]]=l);let p='',st=[];for(const b of bits){p+=b;if(inv[p]){st.push(p+' → '+inv[p]);p=''}}expl=st.join('\n')+'\nСлово: '+ans}
+  else{txt='Для букв используется код (условие Фано выполняется):\n'+lst(L,M)+'\nСколько двоичных знаков содержит закодированное слово '+w.join('')+'?';ans=String(bits.length);expl=w.map(l=>l+' — '+M[l].length).join(', ')+'\nСумма: '+ans}}
+ else if(kind=='short'){k=ri(r,5,8);const m=r()<.5?1:0,mode=r()<.5?'min':'max';[L,M]=mkCode(r,k);const id=shuf(r,L),tg=id[0],ex=m?id[1]:null,kn=L.filter(l=>l!=tg&&l!=ex),K=kn.map(l=>M[l]),S=shortWord(K,m,mode);if(!S)return;
+  txt=head+': '+L.join(', ')+'. Используется двоичный код, удовлетворяющий условию Фано. Известные кодовые слова: '+lst(kn,M)+'.\n'+(m?'Для букв '+tg+' и '+ex+' кодовые слова неизвестны.\nУкажите кратчайшее кодовое слово для буквы '+tg+', при котором для буквы '+ex+' ещё можно будет подобрать слово.':'Укажите кратчайшее кодовое слово для буквы '+tg+'.')+' Если таких слов несколько, укажите слово с '+(mode=='max'?'наибольшим':'наименьшим')+' числовым значением.';
+  ans=S.w;expl=explShort(K,kn.map(l=>[M[l],l]),m,S,mode)}
+ else if(kind=='sumlen'){k=ri(r,6,8);[L,M]=mkCode(r,k);const n=ri(r,2,3),un=shuf(r,L).slice(0,n).sort((a,b)=>RU.indexOf(a)-RU.indexOf(b)),kn=L.filter(l=>!un.includes(l)),K=kn.map(l=>M[l]),b=best(slots(K),un.map(()=>1));if(!b)return;
+  txt=head+': '+L.join(', ')+'. Код удовлетворяет условию Фано. Известные кодовые слова: '+lst(kn,M)+'. Для букв '+un.join(', ')+' кодовые слова неизвестны.\nКакова наименьшая возможная суммарная длина кодовых слов для букв '+un.join(', ')+'?';ans=String(b.cost);
+  expl='Свободные ветки дерева (глубина): '+slots(K).join(', ')+'.\nДлины слов для неизвестных букв: '+b.d.join(' + ')+' = '+b.cost}
+ else{const wd=BANK[ri(r,0,BANK.length-1)],u=[...new Set(wd)],cnt={};for(const c of wd)cnt[c]=(cnt[c]||0)+1;let al=[...u];if(u.length<7&&r()<.6)al.push(RU.filter(c=>!u.includes(c))[ri(r,0,10)]);k=al.length;if(k<5)return;
+  [L,M]=mkCode(r,k);const nk=k>=7?3:ri(r,2,3),kn=shuf(r,L).slice(0,nk).sort((a,b)=>RU.indexOf(a)-RU.indexOf(b)),un=L.filter(l=>!kn.includes(l)).sort((a,b)=>(cnt[b]||0)-(cnt[a]||0)),K=kn.map(l=>M[l]);
+  const b=best(slots(K),un.map(l=>cnt[l]||0));if(!b||!un.some(l=>cnt[l]))return;const kp=wd.split('').reduce((s,c)=>s+(kn.includes(c)?M[c].length:0),0);ans=String(kp+b.cost);
+  txt=head+': '+L.join(', ')+'. Код удовлетворяет условию Фано. Известные кодовые слова: '+lst(kn,M)+'. Для остальных букв кодовые слова неизвестны.\nКакое наименьшее количество двоичных знаков потребуется для кодирования слова '+wd+', если известно, что оно закодировано минимально возможным количеством знаков?';
+  expl='Свободные ветки дерева (глубина): '+slots(K).join(', ')+'.\nЧастоты неизвестных букв в слове: '+un.map(l=>l+'='+(cnt[l]||0)).join(', ')+'.\nДлины (чем чаще буква, тем короче): '+un.map((l,i)=>l+'→'+b.d[i]).join(', ')+'.\nНеизвестные буквы дают '+b.cost+', известные — '+kp+'. Итого '+ans}
+ return{k:kind,txt,ans,expl,hint:HINT[kind],sec:SEC[kind]}}
+
+// ---------- интерфейс ----------
+function head(t,nav=true){return(nav?'<nav><button class=g onclick="home()">Главная</button><button class=g onclick="go(\'learn\')">1. Обучение</button><button class=g onclick="go(\'train\')">2. Тренировка</button><button class=g onclick="go(\'ctl\')">3. Контрольная</button></nav>':'')+'<h1>'+t+'</h1>'}
+const bar=(i,n)=>'<div class=bar><i style="width:'+(100*i/n)+'%"></i></div>';
+function home(){A.innerHTML=head('Тренажёр: условие Фано',false)+`<div class=card><p>Задание 4 ЕГЭ по информатике: кодирование и декодирование информации. Три части: <b>обучение</b> (разбираем с нуля), <b>тренировка</b> (с подсказками) и <b>контрольная</b> (без подсказок, с ограничением по времени).</p>
+<p>Введите фамилию, имя и класс — они нужны, чтобы результат попал к учителю.</p><p><input id=nm placeholder="Фамилия Имя" value="${esc(U.n)}"> <input id=cl size=6 placeholder="Класс" value="${esc(U.c)}"></p>
+<p><button onclick="go('learn')">1. Обучение</button> <button onclick="go('train')">2. Тренировка</button> <button onclick="go('ctl')">3. Контрольная</button></p><p class=m>Результаты тренировки и контрольной отправляются учителю автоматически.</p></div>`}
+function go(m){const n=$('#nm'),c=$('#cl');if(n){U.n=n.value.trim();U.c=c.value.trim();localStorage.setItem('u',JSON.stringify(U))}
+ if(m!='learn'&&!(U.n&&U.c)){alert('Сначала введите фамилию, имя и класс на главной странице');return home()}({learn,train,ctl})[m]()}
+function taskHTML(id,t){T[id]=t;t.n=0;return`<div class=card><div class=q>${esc(t.txt)}</div><p><input id="i${id}" autocomplete=off placeholder="Ваш ответ" onkeydown="if(event.key=='Enter')chk('${id}')"> <button onclick="chk('${id}')">Проверить</button> <button class=g onclick="hint('${id}')">Подсказка</button> <button class=g onclick="show('${id}')">Разбор</button></p><div id="f${id}"></div></div>`}
+function chk(id){const t=T[id],v=norm($('#i'+id).value);if(!v)return;const ok=v==norm(t.ans);t.n++;if(t.first===undefined)t.first=ok&&!t.hinted;
+ $('#f'+id).innerHTML=ok?'<p class=ok>✅ Верно!</p>':'<p class=no>❌ Пока неверно. Попробуйте ещё раз, возьмите подсказку или откройте разбор.</p>';if(ok){t.done=1;show(id,1)}}
+function hint(id){T[id].hinted=1;$('#f'+id).insertAdjacentHTML('beforeend','<p class=m>💡 '+esc(T[id].hint)+'</p>')}
+function show(id,quiet){const t=T[id];if(!quiet){t.hinted=1;t.done=1;if(t.first===undefined)t.first=false}$('#f'+id).insertAdjacentHTML('beforeend','<div class=ex><b>Разбор. Ответ: '+esc(t.ans)+'</b>\n'+esc(t.expl)+'</div>');const n=$('#nx');if(n)n.disabled=false}
+
+// --- обучение ---
+const tr=(c)=>tree(c);
+function tree(code){const inv={};for(const k in code)inv[code[k]]=k;const W=Object.keys(inv);let n=0,s='',md=Math.max(...W.map(w=>w.length));
+ const f=p=>{const y=p.length*55+25;if(inv[p]||!W.some(w=>w.startsWith(p))){const x=n++*52+30;s+=inv[p]?`<circle class=lf cx=${x} cy=${y} r=15 /><text x=${x} y=${y+5} text-anchor=middle>${inv[p]}</text>`:`<circle class=fr cx=${x} cy=${y} r=9 />`;return x}
+  const a=f(p+'0'),b=f(p+'1'),x=(a+b)/2;s+=`<line x1=${x} y1=${y} x2=${a} y2=${y+55} /><line x1=${x} y1=${y} x2=${b} y2=${y+55} /><text x=${(x+a)/2-8} y=${y+26}>0</text><text x=${(x+b)/2+4} y=${y+26}>1</text>`;return x};f('');return`<svg viewBox="0 0 ${n*52+10} ${md*55+50}" width=${n*52+10}>${s}</svg>`}
+const LS=[
+ {h:'Что такое код',b:'<p>Компьютер хранит всё нулями и единицами. Чтобы передать текст, каждой букве назначают <b>кодовое слово</b> — набор нулей и единиц. Например: А → 0, Б → 10, В → 11.</p><p>Если все слова одной длины, код <b>равномерный</b>. Если длины разные — <b>неравномерный</b>. Во втором случае частым буквам дают короткие слова, и сообщение получается короче.</p>'},
+ {h:'В чём проблема неравномерного кода',b:'<p>Пусть А → 0, Б → 1, В → 01. Что значит сообщение <b>01</b>: «АБ» или «В»? Однозначно не прочитать.</p><p>Причина: слово буквы А (<b>0</b>) — это начало слова буквы В (<b>01</b>). Приёмник не знает, где закончилась одна буква и началась другая.</p>'},
+ {h:'Условие Фано',b:'<p><b>Ни одно кодовое слово не является началом другого кодового слова.</b></p><p>✅ {0, 10, 110, 111} — подходит.<br>❌ {0, 01, 11} — слово 0 — начало слова 01.</p><p>Если условие выполнено, сообщение читается однозначно: идём слева направо, как только набралось кодовое слово — буква найдена.</p><p><b>Проверьте себя:</b></p>',chk:'fano',seed:3},
+ {h:'Дерево кодов',b:()=>'<p>Код удобно рисовать деревом. Из каждой развилки идут две ветки: «0» и «1». Буква стоит <b>в конце</b> ветки (круг). Если на пути к букве нет других букв — условие Фано выполнено.</p>'+tree({А:'0',Б:'10',В:'110',Г:'111'})+'<p>Пунктирный кружок — <b>свободная ветка</b>: там можно поставить новую букву. Здесь слово <b>11</b> было бы ошибкой: оно — начало слов 110 и 111.</p>'+tree({А:'0',Б:'10'})+'<p>Здесь свободна ветка 11: можно взять слово 11.</p><p><b>Раскодируйте сами:</b></p>',chk:'decode',seed:8},
+ {h:'Как найти кодовое слово для буквы',b:()=>{const t=mk(RNG(5),'short');return'<p><b>Алгоритм</b></p><p>1. Перебираем слова по длине: 1, 2, 3 … а внутри длины — по возрастанию числа (00, 01, 10, 11).<br>2. Вычёркиваем: занятые слова; слова, которые являются <b>началом</b> чужого кода; слова, которые <b>начинаются с</b> чужого кода.<br>3. Следим, чтобы для ещё не закодированных букв осталось место.<br>4. Из подходящих берём наименьшее или наибольшее — как сказано в условии.</p><p><b>Разберём пример:</b></p><div class=ex>'+esc(t.txt)+'</div><div class=ex>'+esc(t.expl)+'</div><p><b>Теперь сами:</b></p>'},chk:'short',seed:21},
+ {h:'Как закодировать слово как можно короче',b:()=>{const t=mk(RNG(9),'msg');return'<p>Нужно найти <b>свободные ветки</b> дерева и раздать их неизвестным буквам. Главное правило: <b>чем чаще буква встречается в слове, тем короче её кодовое слово</b>. Если свободных веток меньше, чем букв, — делим ветку на две (слово становится длиннее на 1 знак).</p><p>Не забывайте про буквы, которых нет в слове, но которые есть в алфавите: им тоже нужен код.</p><p><b>Пример:</b></p><div class=ex>'+esc(t.txt)+'</div><div class=ex>'+esc(t.expl)+'</div><p><b>Теперь сами:</b></p>'},chk:'msg',seed:33},
+ {h:'Обучение пройдено',b:'<p>Теперь переходите к тренировке: там много заданий с подсказками и разбором. Когда будете уверены — контрольная.</p><p><button onclick="go(\'train\')">К тренировке →</button></p>'}];
+function learn(i=0){const s=LS[i];let b=typeof s.b=='function'?s.b():s.b;if(s.chk)b+=taskHTML('l'+i,mk(RNG(s.seed),s.chk));
+ A.innerHTML=head('Обучение')+bar(i+1,LS.length)+'<div class=card><h2>'+(i+1)+'. '+s.h+'</h2>'+b+'</div><p>'+(i?`<button class=g onclick="learn(${i-1})">← Назад</button> `:'')+(i<LS.length-1?`<button onclick="learn(${i+1})">Дальше →</button>`:'')+'</p>'}
+
+// --- тренировка ---
+const PT=['fano','decode','enc','short','short','short','sumlen','sumlen','msg','msg'],PC=['fano','short','short','sumlen','sumlen','msg','msg','msg'];
+let TR;
+function train(){const s=Date.now()%1e9;TR={i:0,t:PT.map((k,i)=>mk(RNG(s+i*131),k)),t0:Date.now(),log:[]};trShow()}
+function trShow(){const t=TR.t[TR.i];A.innerHTML=head('Тренировка · '+(TR.i+1)+' из '+TR.t.length)+bar(TR.i,TR.t.length)+taskHTML('t',t)+'<p><button id=nx disabled onclick="trNext()">Дальше →</button></p>'}
+function trNext(){const t=TR.t[TR.i];TR.log.push({k:t.k,q:t.txt,c:t.ans,ok:!!t.first,n:t.n});if(++TR.i<TR.t.length)return trShow();
+ const sc=TR.log.filter(x=>x.ok).length,rec={mode:'тренировка',name:U.n,cls:U.c,date:new Date().toLocaleString('ru'),score:sc,max:TR.log.length,sec:Math.round((Date.now()-TR.t0)/1e3),blur:0,paste:0,fs:0,flags:[],tasks:TR.log.map(x=>({k:x.k,q:x.q,a:'попыток: '+x.n,c:x.c,ok:x.ok,t:0}))};
+ A.innerHTML=head('Тренировка завершена')+`<div class=card><h2>Верно с первой попытки: ${sc} из ${TR.log.length}</h2><p id=st></p><p><button onclick="train()">Ещё одна тренировка</button> <button class=g onclick="go('ctl')">К контрольной</button></p></div>`;send(rec)}
+
+// --- контрольная ---
+function ctl(){const day=today(),key='ctl_'+H(U.n.toLowerCase()+U.c+day),st=localStorage.getItem(key);
+ if(st){A.innerHTML=head('Контрольная')+`<div class=card>Контрольная на сегодня (${day}) ${st=='done'?'уже выполнена':'была начата и прервана'}. Повторный запуск невозможен — обратитесь к учителю.</div>`;
+  if(st=='started'){localStorage.setItem(key,'aborted');send({mode:'контрольная',status:'ПРЕРВАНА (страница закрыта или обновлена)',name:U.n,cls:U.c,date:new Date().toLocaleString('ru'),score:0,max:PC.length,sec:0,blur:0,paste:0,fs:0,flags:['страница закрыта/обновлена во время работы'],tasks:[]})}return}
+ A.innerHTML=head('Контрольная',false)+`<div class=card><h2>Правила</h2><p>• ${PC.length} заданий, на каждое ограничено время (1,5–4 минуты). Вернуться к заданию нельзя.<br>• Подсказок нет. Условие показано картинкой — его нельзя скопировать.<br>• У каждого ученика свой вариант, он зависит от фамилии и даты.<br>• Фиксируются: выходы со страницы и из полного экрана, попытки вставки, время на каждое задание.<br>• Обновление страницы или закрытие = работа прервана, повторить нельзя.<br>• Допускается один запуск в день. Бумага и ручка — можно.</p>${CFG.controlCode?'<p><input id=cc placeholder="Код допуска от учителя"></p>':''}<p><button onclick="ctlGo('${key}')">Начать контрольную</button></p></div>`}
+const ev={blur(){if(C&&C.on&&Date.now()-C.lb>600){C.blur++;C.lb=Date.now();C.cur.b++}},vis(){if(document.hidden)ev.blur()},fs(){if(C&&C.on&&!document.fullscreenElement){C.fs++;C.cur.f++}},no(e){if(!C||!C.on)return;if(e.type=='paste'){C.paste++;C.cur.p++}e.preventDefault()}},NO=['copy','cut','paste','contextmenu','dragstart','drop'];
+function ctlGo(key){if(CFG.controlCode&&$('#cc').value.trim()!==CFG.controlCode)return alert('Неверный код допуска');localStorage.setItem(key,'started');const seed=H(U.n.toLowerCase()+U.c+today());
+ C={key,seed,i:0,t:PC.map((k,i)=>mk(RNG(seed+i*7919),k)),res:[],blur:0,paste:0,fs:0,on:1,lb:0,t0:Date.now()};
+ try{document.documentElement.requestFullscreen()}catch(e){}addEventListener('blur',ev.blur);document.addEventListener('visibilitychange',ev.vis);document.addEventListener('fullscreenchange',ev.fs);NO.forEach(n=>document.addEventListener(n,ev.no));ctlShow()}
+function ctlShow(){const t=C.t[C.i];C.cur={b:0,p:0,f:0,t0:Date.now()};let left=t.sec;C.busy=0;
+ A.innerHTML=head('Контрольная · '+(C.i+1)+' из '+C.t.length,false)+bar(C.i,C.t.length)+`<div class=card><div>Осталось: <b id=tm></b></div><canvas id=cv></canvas><p><input id=ci autocomplete=off autocapitalize=off spellcheck=false placeholder="Ответ" onkeydown="if(event.key=='Enter')ctlNext()"> <button onclick="ctlNext()">Ответить →</button></p></div>`;
+ draw(t.txt);$('#ci').focus();const tick=()=>{$('#tm').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0')};tick();C.iv=setInterval(()=>{left--;tick();if(left<=0)ctlNext()},1000)}
+function draw(txt){const cv=$('#cv'),w=Math.min(700,innerWidth-60),d=devicePixelRatio||1,x=cv.getContext('2d'),fs=17,lh=25,col=getComputedStyle(document.body).color;x.font=fs+'px sans-serif';const lines=[];
+ for(const p of txt.split('\n')){let s='';for(const wd of p.split(' ')){if(x.measureText(s+' '+wd).width>w-20&&s){lines.push(s);s=wd}else s=s?s+' '+wd:wd}lines.push(s)}
+ const h=lines.length*lh+20;cv.width=w*d;cv.height=h*d;cv.style.width=w+'px';cv.style.height=h+'px';x.scale(d,d);x.font=fs+'px sans-serif';x.fillStyle=col;lines.forEach((l,i)=>x.fillText(l,10,25+i*lh));
+ x.globalAlpha=.07;x.font='bold 15px sans-serif';for(let yy=20;yy<h;yy+=40)for(let xx=-20+(yy%80);xx<w;xx+=190)x.fillText(U.n,xx,yy);}
+function ctlNext(){if(C.busy)return;C.busy=1;clearInterval(C.iv);const t=C.t[C.i],v=$('#ci').value,c=C.cur;C.res.push({k:t.k,q:t.txt,a:v,c:t.ans,ok:norm(v)==norm(t.ans),t:Math.round((Date.now()-c.t0)/1e3),b:c.b,p:c.p,f:c.f});
+ if(++C.i<C.t.length)ctlShow();else ctlEnd()}
+function ctlEnd(){C.on=0;removeEventListener('blur',ev.blur);document.removeEventListener('visibilitychange',ev.vis);document.removeEventListener('fullscreenchange',ev.fs);NO.forEach(n=>document.removeEventListener(n,ev.no));try{document.exitFullscreen()}catch(e){}
+ localStorage.setItem(C.key,'done');const sc=C.res.filter(x=>x.ok).length,fl=[];if(C.blur)fl.push('уходов со страницы: '+C.blur);if(C.paste)fl.push('попыток вставки: '+C.paste);if(C.fs)fl.push('выходов из полного экрана: '+C.fs);
+ const fast=C.res.filter(x=>x.ok&&x.t<8&&['msg','sumlen','short'].includes(x.k)).length;if(fast)fl.push('сложных заданий решено быстрее 8 с: '+fast);
+ const rec={mode:'контрольная',status:'завершена',name:U.n,cls:U.c,date:new Date().toLocaleString('ru'),seed:C.seed,score:sc,max:C.res.length,sec:Math.round((Date.now()-C.t0)/1e3),blur:C.blur,paste:C.paste,fs:C.fs,flags:fl,tasks:C.res};
+ A.innerHTML=head('Контрольная завершена',false)+`<div class=card><h2>Ваш результат: ${sc} из ${C.res.length}</h2><p id=st></p><p class=m>Правильные ответы не показываются. Учитель может попросить вас устно объяснить решение любого задания.</p></div>`;send(rec)}
+
+// --- отправка на Google Диск учителя ---
+function dl(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(LAST,null,1)],{type:'application/json'}));a.download='result_'+LAST.mode+'_'+U.n.replace(/\s+/g,'_')+'.json';a.click()}
+function send(rec){LAST=rec;let q=[];try{q=JSON.parse(localStorage.getItem('out')||'[]')}catch(e){}q.push(rec);localStorage.setItem('out',JSON.stringify(q));flush(1)}
+async function flush(show){let q=[];try{q=JSON.parse(localStorage.getItem('out')||'[]')}catch(e){}const el=$('#st');
+ if(!CFG.url){if(el)el.innerHTML='<span class=no>Адрес приёма результатов не настроен.</span> <button class=g onclick="dl()">Скачать файл результата</button>';return}
+ const rest=[];for(const r of q){try{await fetch(CFG.url,{method:'POST',mode:'no-cors',body:JSON.stringify(r)})}catch(e){rest.push(r)}}localStorage.setItem('out',JSON.stringify(rest));
+ if(el)el.innerHTML=rest.length?'<span class=no>Нет связи — результат сохранён и отправится при следующем открытии тренажёра.</span> <button class=g onclick="flush(1)">Повторить</button> <button class=g onclick="dl()">Скачать файл</button>':'<span class=ok>✅ Результат отправлен учителю.</span>'}
+home();flush();
+</script></body></html>
